@@ -1,0 +1,18 @@
+Command: node scripts/handling-check.js
+Node: v24.18.0
+Date: 2026-10-16 (Europe/London)
+
+clean-corner slip=5.0° aggressive-slip=11.7° yaw=0.941
+countersteer 4.7° -> 2.7° in 0.67s
+low-speed steering yaw=2.660 after 0.55s
+full-throttle slip=0.282 distance=533.5
+lift slip=0.155 speed=93.7
+oil slip=0.728 airborne-yaw=0.012
+wheels rolling=160.0 stopped=0.0 braking=25.7 skid-delta=16.4 steer=-1.00
+lap flat-out=17.1s off-road=0% skilled=19.4s off-road=0%
+cone launched=true velocity=86.0 spin=13.3
+six-lap AI=112.0s off-road=0%
+acceleration 1/2/3s=162.9/274.7/326.0 max=326
+surface settled grass=238.4 (73%) mud=180.6 (55%) entry1s grass=261.8 mud=225.2
+proportions road=320 car=62 five-car field=310 bridge=282
+PASS handling checks
