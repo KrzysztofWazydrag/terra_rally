@@ -1,6 +1,6 @@
 # ADR — Canyon Race Feel & ATR Gameplay Fidelity Programme
 
-- **Status:** Accepted as the authoritative implementation plan; C0, C5–C7 are OWNER VERIFIED, C1–C4 are technically complete, and iterative phase execution is active
+- **Status:** Accepted as the authoritative implementation plan; C0, C5–C7 are OWNER VERIFIED, C1–C4 are technically complete, C8 is TECHNICALLY COMPLETE pending owner verification, and iterative phase execution is active
 - **Date:** 2026-10-16
 - **Decision owners:** Game owner and implementation agent
 - **Scope:** Championship Track #2 only, working name **CANYON**
@@ -20,7 +20,7 @@
 | C5 | Canyon track rebuild | OWNER VERIFIED | [C5 Canyon evidence](evidence/c5-canyon.md), [runtime screenshots](evidence/c5-runtime/) | Yes |
 | C6 | Pickup system | OWNER VERIFIED | [C6 pickup evidence](evidence/c6-pickups.md), [runtime screenshots](evidence/c6-runtime/) | Yes |
 | C7 | AI competition | OWNER VERIFIED | [C7 AI competition evidence](evidence/c7-ai.md), [live Canyon AI race capture](evidence/c7-runtime/c7-live-race.png) | Yes |
-| C8 | Race presentation | NOT STARTED | Not captured | No |
+| C8 | Race presentation | TECHNICALLY COMPLETE — OWNER VERIFICATION REQUIRED | [C8 race presentation report](evidence/c8-race-presentation.md), [runtime screenshots and validation](evidence/c8-runtime/) | No |
 | C9 | Performance / polish gate | NOT STARTED | Not captured | No |
 | C10 | Canyon golden baseline | NOT STARTED | Not captured | No |
 
@@ -289,17 +289,30 @@ Capture a reproducible before-state for the existing Track #2 (currently named `
 
 ### Phase C8 — Race presentation
 
-**Status: NOT STARTED**
+**Status: TECHNICALLY COMPLETE — OWNER VERIFICATION REQUIRED**
 
 **Scope:** clear position indicator, lap/time if retained, race-start presentation, engine prominence, tyre/collision/pickup audio, and race-pace feedback.
 
-- [ ] Make 1st–5th position unmistakable at a glance.
-- [ ] Present lap and timer information if retained, without crowding the course.
-- [ ] Review race-start presentation for clear launch timing.
-- [ ] Balance engine, tyre, collision, and pickup sounds so speed and grip feedback remain audible.
-- [ ] Ensure high-speed feedback supports reaction and course readability.
+- [x] Make 1st–5th position unmistakable at a glance.
+- [x] Present lap, lap progress, and timer information without crowding the course.
+- [x] Strengthen countdown/GO, lap, pickup, and finish presentation.
+- [x] Raise engine and tyre feedback and retain existing collision/pickup effects; record that subjective listening still needs owner review.
+- [x] Adjust speed-dependent camera lead/zoom and improve static Canyon visual readability without changing course geometry.
 
 **Acceptance evidence:** normal-race screenshots/capture and audio review with HUD visible; owner verifies position and race feedback are immediately readable.
+
+**C8 implementation and evidence record (2026-10-16):**
+
+- **Status:** TECHNICALLY COMPLETE — OWNER VERIFICATION REQUIRED. The scoped presentation work and objective runtime evidence are ready for owner gameplay/listening review. C9 has not started.
+- **Source/baseline commit:** `e2821b9708be9bd3dc51a8a2c08aa98569393508` (C7 owner approval record).
+- **Resulting implementation/evidence commit:** `8608a29d8fb43af5bd775811c1c3258162f5f5e4` (`feat: polish race presentation for C8`).
+- **Evidence:** [C8 race presentation report](evidence/c8-race-presentation.md), [normal race capture](evidence/c8-runtime/c8-race-presentation.png), [vehicle/wheel and HUD capture](evidence/c8-runtime/c8-vehicle-hud.png), [Canyon environment capture](evidence/c8-runtime/c8-canyon-environment.png), and [validation output](evidence/c8-runtime/c8-validation.txt).
+- **Implementation:** rebuilt the HUD around a large ordinal 1ST–5TH indicator, added lap progress and clearer lap/time/speed hierarchy, improved countdown/GO and lap banners, pickup/surface feedback, and the race-results finish panel. Adjusted camera lead/zoom presentation at speed. Raised the existing engine, tyre-squeal and surface sound gains while preserving their dependencies. Refined cached Canyon racing-line contrast, red/white kerbs, barrier reflectors, and the reusable Canyon billboard sprite. These are presentation changes only.
+- **Live runtime:** served a disposable C8 runtime copy with Python's standard-library HTTP server at `http://127.0.0.1:8798/`. A one-expression temporary `newChampionship()` initial `trackIndex` change from 0 to 1 exposed the existing CANYON CIRCUIT without completing Track #1. `game.js` matched the implementation commit after reverting only that index change; style, physics/pickup core and assets matched; `index.html` contained only the added disposable screenshot-recorder script. The game was started through the event briefing and normal race start, with the real five-car production race and four AI opponents. Short operator-controlled live HUD samples ranged from 28–82 km/h at race timer 0:01–0:02; this is a brief presentation smoke check, not lap-time or pace evidence. Screenshots were captured at a 2560×1313 CSS viewport, DPR 1, from the production game canvas with live DOM HUD geometry/text composited into the PNG. Temporary copy, recorder, browser tab and server were removed after capture.
+- **Audio evidence and limitation:** source and live race audio-update path are present; SOUND ON was displayed. Engine gain is `.05 + speedRatio*.03 + throttle*.022 + min(.018, squeal*.012)`, with pitch dependent on speed/load. Tyre squeal gain is `squeal*.078` (0.72 multiplier on gravel/grass); terrain gain retains surface and speed dependencies at `.009` scale. The available browser tooling cannot genuinely audition the output, so subjective engine loudness, tyre clarity and race feel remain owner verification items. They do not block technical completion.
+- **Validation:** `node --check game.js`, `node scripts/ai-competition-check.js`, `node scripts/canyon-course-check.js`, `node scripts/handling-check.js`, `node scripts/pickup-system-check.js`, and `git diff --check` all pass. The handling check's source assertions were updated to the C8 gain formulas; the numerical handling loop is regression/synthetic evidence only.
+- **Scope protection:** no Track #2 definition or geometry, physics core, AI behavior, pickup/collision/race rules, or C9 performance systems changed. Browser console showed no errors or warnings. No C9 work was started.
+- **Owner review:** please verify position and race feedback are immediately readable, and that the camera/high-speed presentation preserves road readability. Listen for engine and tyre prominence/balance in a real browser/game session. This phase is not OWNER VERIFIED until explicit owner approval.
 
 ### Phase C9 — Performance / polish gate
 
@@ -352,4 +365,4 @@ Do not silently change a decision when implementation evidence shows it may be w
 
 ## Current session boundary
 
-This ADR records decisions and the C0–C10 checklist. C0, C5, C6 and C7 are **OWNER VERIFIED**. C0's human lap timing and subjective audio feel were waived as gates and may be evaluated later during normal iteration. C1–C4 are technically complete. C8 is the next phase and has not started.
+This ADR records decisions and the C0–C10 checklist. C0, C5, C6 and C7 are **OWNER VERIFIED**. C0's human lap timing and subjective audio feel were waived as gates and may be evaluated later during normal iteration. C1–C4 are technically complete. C8 is **TECHNICALLY COMPLETE — OWNER VERIFICATION REQUIRED**; C9 has not started.
