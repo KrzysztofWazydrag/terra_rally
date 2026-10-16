@@ -1,6 +1,6 @@
 # ADR — Canyon Race Feel & ATR Gameplay Fidelity Programme
 
-- **Status:** Accepted as the authoritative implementation plan; C0 is OWNER VERIFIED and C1 is TECHNICALLY COMPLETE pending owner verification
+- **Status:** Accepted as the authoritative implementation plan; C0 is OWNER VERIFIED, C1 is TECHNICALLY COMPLETE, and iterative phase execution is active
 - **Date:** 2026-10-16
 - **Decision owners:** Game owner and implementation agent
 - **Scope:** Championship Track #2 only, working name **CANYON**
@@ -72,7 +72,8 @@ The target reaction is: **“This has the race feel I remember from ATR.”** Th
 - Before implementation, confirm the phase scope and acceptance evidence. Do not silently expand scope.
 - Update the phase status and attach evidence in this ADR when work is ready for review. Evidence may include measurements, screenshots, test output, or concise reproduction notes, as appropriate to the phase.
 - `TECHNICALLY COMPLETE` means scoped implementation and its technical evidence are ready. It does not mean the phase is approved.
-- Stop after presenting the phase evidence and request owner verification. Set `OWNER VERIFIED` only after explicit owner approval. Do not start the next phase before that approval.
+- After committing and pushing a technically complete phase, continue to the next phase unless owner feedback is genuinely needed to resolve a product-level question. Do not stop for routine tuning choices or minor subjective approvals.
+- `OWNER VERIFIED` still means explicit owner approval, and must not be inferred. Owner verification is no longer a default gate between phases under the owner's 2026-10-16 iterative-workflow decision. The explicit C10 final sign-off remains required before Canyon becomes the approved baseline for other tracks.
 - If a phase cannot proceed, mark it `BLOCKED`, record the reason and evidence, and stop for owner direction.
 - The final phase C10 records the approved Canyon baseline. Only after C10 is `OWNER VERIFIED` may Canyon be treated as the reference implementation for other tracks.
 
@@ -86,11 +87,11 @@ Checkboxes are phase work items, not proof of completion. Each phase remains `NO
 
 Capture a reproducible before-state for the existing Track #2 (currently named `QUARRY SWITCHBACK` in code), which is the programme's future CANYON reference.
 
-- [ ] Record a competent-human lap time and test conditions. **Owner value not supplied**; the owner approval message contained the literal `[TIME]` placeholder. No automated/browser-driven run is being represented as a competent human lap.
+- [x] Human lap timing and subjective audio feel waived as C0 gates by owner decision (2026-10-16). The technical baseline is accepted as sufficient; these items may be evaluated during normal iteration and must not block the programme. No competent-human lap time or subjective audio judgment is claimed as baseline evidence.
 - [x] Measure live acceleration from rest and record the highest usable speed observed. Live HUD reached 300 km/h on TARMAC 5.45 seconds of game-clock after a reset; throttle was held for 3.00 seconds. This is the highest live speed observed, not a confirmed plateau.
 - [x] Record FPS and frame-time conditions at approximately 1920×1080. Repeated F2 snapshots over approximately 2:46 of live Track #2 race time: 144 FPS, 6.9–7.1 ms frame, 0.0–0.2 ms update, 0.3–1.0 ms render; no visible stutter/spikes.
 - [x] Record a live production-AI race timing checkpoint and race conditions. At race clock 0:01.69 the player was 2/5 and all four AI were visible; at 1:20.14 the player was 5/5 with two AI visible. The normal HUD exposes no individual AI lap counters/times, so no per-AI lap time is claimed.
-- [x] Verify engine audio implementation and that the live race audio path runs. Source/runtime presence is captured; subjective loudness and race-feel require owner listening.
+- [x] Verify engine audio implementation and that the live race audio path runs. Source/runtime presence is captured; subjective loudness and race-feel are deferred to normal iteration and are not a programme gate.
 - [x] Capture durable screenshots of normal racing, vehicle/wheels, HUD, Track #2 and production AI. See [`C0 runtime screenshots`](evidence/c0-runtime/).
 - [x] Store evidence and identify the tested source state. Baseline commit is `a6628f31628f3ad339f4d524e6d2b549d9208653`.
 
@@ -98,18 +99,18 @@ Capture a reproducible before-state for the existing Track #2 (currently named `
 
 **C0 evidence record (2026-10-16; temporary Track #2 runtime capture):**
 
-- **Status:** OWNER VERIFIED. The owner confirmed review of C0 evidence and screenshots and explicitly approved C0. The lap-time and subjective audio assessment fields were left as the literal `[TIME]` and `[MY ASSESSMENT]` placeholders, so no values are attributed to the owner.
+- **Status:** OWNER VERIFIED by explicit owner decision (2026-10-16). The owner reviewed the evidence and screenshots, accepted the technical baseline as sufficient, and waived the missing human lap time and subjective audio assessment as C0 gates. Those observations can be evaluated later during normal iteration and must not block the programme.
 - **Source/baseline commit:** `a6628f31628f3ad339f4d524e6d2b549d9208653`.
 - **Resulting C0 evidence commit:** `506108b` (`docs: complete C0 Track 2 baseline evidence`).
 - **Runtime method / temporary bypass:** copied only runtime files to `/tmp/antoni-game-c0.0Dp4qb`; changed only copied `game.js` `newChampionship()` flow from `trackIndex=0` to `trackIndex=1`, serving it using Python's standard-library server at `http://127.0.0.1:8766/`. This opened the existing `TRACK_DEFS[1]` / QUARRY SWITCHBACK through its normal event briefing and normal race start. `index.html`, `physics-core.js`, `style.css`, and all three assets matched the source checkout byte-for-byte; `game.js` had only the single flow-index difference. Temporary copy and server were removed after capture. No repository gameplay source or permanent dependency changed.
 - **Live production AI:** the actual five-car Track #2 race ran with four production AI. At 0:01.69 HUD position was 2/5 and the start-grid screenshot showed all five cars; at 1:20.14 HUD position was 5/5 and two AI were visible in the race screenshot. These are race-clock checkpoints from the live production race, distinct from the synthetic handling-check route. The production HUD exposes no per-AI lap counter/time, so individual AI lap times remain unavailable and are not inferred.
 - **Live acceleration / speed:** reset HUD read 0 km/h at race clock 4:25.60; Up was held 3.00 seconds; next HUD sample was 300 km/h on TARMAC at 4:31.05 (5.45 seconds of game-clock elapsed). Highest live sample: 300 km/h. The run did not establish a stable limiter plateau; source-configured 326 is supplementary only. A separate full-throttle probe reached 254 km/h before ending off-road on GRASS.
 - **Performance conditions/results:** viewport override 1920×1080 CSS pixels, DPR 1, live Track #2 race with F2 overlay. Repeated F2 snapshots across approximately 2:46 of race time read 144 FPS, 6.9–7.1 ms frame time, 0.0–0.2 ms update, and 0.3–1.0 ms render. No visible spikes or stutter. These were repeated discrete readings, not a continuous trace or full six-lap profile; the player was stationary/off-line for some of that sample period.
-- **Engine audio:** SOUND ON was displayed and the live race audio update ran. In `game.js` lines 197–212, `AudioSystem.ensure()` creates/resumes Web Audio; a sawtooth engine oscillator is started during racing; frequency is `(58 + speed × 0.62) × load × airborneFactor`, with squeal-dependent load and 0.84 airborne factor; gain is fixed at 0.014 while racing. The engine is speed-dependent, not throttle-dependent. The browser/capture path cannot genuinely listen to the output. Subjective launch, acceleration, sustained-speed and lift-off loudness/race-feel are **OWNER VERIFICATION REQUIRED**.
-- **Player lap:** no competent-human or representative controlled completed player lap was captured. The owner did not supply the requested lap value/conditions; C0 is owner verified based on the owner's explicit approval of the evidence, without claiming a lap time.
+- **Engine audio:** SOUND ON was displayed and the live race audio update ran. In the C0 source, a sawtooth oscillator was started during racing; frequency was `(58 + speed × 0.62) × load × airborneFactor`, with squeal-dependent load and 0.84 airborne factor; gain was fixed at 0.014. The browser/capture path could not listen to the output. Subjective launch, acceleration, sustained-speed and lift-off loudness/race-feel were not captured as baseline observations; the owner waived this as a C0 gate and it may be evaluated during normal iteration.
+- **Player lap:** no competent-human or representative controlled completed player lap was captured. No lap time is claimed. The owner waived this as a C0 gate; lap timing can be evaluated during normal iteration and must not block the programme.
 - **Evidence paths:** [`C0 baseline evidence`](evidence/c0-baseline.md); [`runtime screenshots`](evidence/c0-runtime/); [`supplementary synthetic handling check`](evidence/c0-handling-check.txt).
 - **Implementation notes:** no committed game, gameplay, physics, AI, audio, rendering, or track files were changed. No C1 work was started. The one-line bypass existed only in the disposable `/tmp` copy and was deleted.
-- **Known limitations:** owner review was confirmed; subjective audio assessment and competent-human lap value were not supplied. Production UI does not show individual AI lap times, and the live highest speed sample did not verify a stable speed cap. The AI race-clock checkpoint, live speed reading, repeated F2 measurements, audio implementation/runtime observation, and screenshots are durable; synthetic values remain supplementary only.
+- **Known limitations:** no human lap time or subjective audio assessment was captured for C0; both are waived as gates and deferred to normal iteration. Production UI does not show individual AI lap times, and the live highest speed sample did not verify a stable speed cap. The AI race-clock checkpoint, live speed reading, repeated F2 measurements, audio implementation/runtime observation, and screenshots are durable; synthetic values remain supplementary only.
 
 ### Phase C1 — Vehicle pace
 
@@ -123,7 +124,7 @@ Capture a reproducible before-state for the existing Track #2 (currently named `
 - [ ] Keep grass recoverable and mud clearly more punishing.
 - [ ] Compare results to C0 measurements.
 
-**Acceptance evidence:** repeatable acceleration timing, surface behavior notes, audio comparison, and owner-observable gameplay capture. Stop for owner verification.
+**Acceptance evidence:** repeatable acceleration timing, surface behavior notes, audio comparison, and owner-observable gameplay capture. Record owner feedback when useful; do not block later phases on routine approval.
 
 **C1 evidence record (2026-10-16):**
 
@@ -147,7 +148,7 @@ Capture a reproducible before-state for the existing Track #2 (currently named `
 - [ ] Make throttle lift and countersteer settle the car in a readable, recoverable way.
 - [ ] Keep oil's large grip loss for its later track integration; confirm its handling response if the existing surface model supports it without widening this phase.
 
-**Acceptance evidence:** repeatable straight, clean-corner, grip-limit, lift, and countersteer captures/notes. Owner verifies the car is agile and slips only when pushed beyond grip.
+**Acceptance evidence:** repeatable straight, clean-corner, grip-limit, lift, and countersteer captures/notes. Owner gameplay feedback can refine the result during normal iteration.
 
 ### Phase C3 — Vehicle animation pipeline
 
@@ -263,7 +264,7 @@ Final validation and approval of Canyon as the reference implementation.
 - [ ] Record FPS/frame time from the six-lap test.
 - [ ] Capture final vehicle, track, and HUD screenshots.
 - [ ] List known limitations and attach all evidence to this ADR or clearly linked durable artifacts.
-- [ ] Stop for explicit owner sign-off.
+- [ ] Obtain explicit owner sign-off before treating Canyon as the golden baseline for other tracks.
 
 **Acceptance evidence:** complete before/after record against C0, final screenshots and measurements, known limitations, and explicit owner approval. Only then may Canyon serve as the approved baseline for future tracks.
 
@@ -283,8 +284,8 @@ Do not silently change a decision when implementation evidence shows it may be w
 
 | Date | Original decision | Observed problem | Proposed change | Reason | Resulting decision |
 |---|---|---|---|---|---|
-| — | — | — | — | — | No changes recorded. |
+| 2026-10-16 | C0 human lap/audio observations were pending; every phase stopped for owner verification | The baseline measurements and screenshots are accepted, while routine phase-by-phase approvals would interrupt iteration | Waive C0 lap/audio observations as gates and continue after committed phase evidence unless owner feedback is genuinely needed | Owner explicitly accepted C0 as sufficient, deferred those observations to normal iteration, and requested iterative implementation | C0 is OWNER VERIFIED; human lap timing and subjective audio feel will be revisited during normal iteration and must not block the programme. Continue phases after technical completion and commit/push; retain explicit C10 sign-off. |
 
 ## Current session boundary
 
-This ADR records decisions and the C0–C10 checklist. C0 is **OWNER VERIFIED** based on the owner's explicit approval of its evidence and screenshots. The competent-human lap value and subjective audio assessment were not supplied and remain unreported. C1 is **TECHNICALLY COMPLETE — OWNER VERIFICATION REQUIRED**; its engine loudness/feel and pace should be reviewed in a live race before C2.
+This ADR records decisions and the C0–C10 checklist. C0 is **OWNER VERIFIED**; the owner accepted its technical evidence as sufficient and waived human lap timing and subjective audio feel as gates, to be evaluated later during normal iteration. C1 is **TECHNICALLY COMPLETE**. C2 is next; proceed without waiting for routine C1 approval under the owner's iterative-workflow direction.
