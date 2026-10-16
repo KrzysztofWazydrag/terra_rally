@@ -37,6 +37,7 @@ The captures show a normal six-lap, five-car race in the production renderer, in
 
 - [Start grid and Canyon race screenshot](c5-runtime/c5-start-grid.png)
 - [Bridge, road edge, props, and hazards screenshot](c5-runtime/c5-bridge-hazards.png)
+- [Full-course route overview](c5-runtime/c5-full-course.svg) (diagram rendered from the committed Track #2 route and feature data; not a live renderer screenshot)
 
 The screenshots were taken from the temporary direct-start copy at 2560×1440 desktop resolution. They are live runtime captures, not mockups. No performance range was measured in C5; performance profiling remains in C9.
 
