@@ -1,48 +1,55 @@
 # C0 baseline evidence — QUARRY SWITCHBACK
 
 - **Captured:** 2026-10-16 (Europe/London)
-- **Source/baseline commit:** `a1a6345d42f89d5e405cb259f7baf857d29abe78` (`baseline: import existing Terra Rally project`; rebased onto the remote MIT license commit before publication)
-- **Build:** source at the baseline commit; no gameplay files changed during C0. The local commits were rebased onto the remote's pre-existing `LICENSE` commit before publication; author email uses the account's GitHub noreply address.
-- **Target:** Championship Track #2, source name `QUARRY SWITCHBACK`.
+- **Status:** **TECHNICALLY COMPLETE — OWNER VERIFICATION REQUIRED**
+- **Source/baseline commit:** `a6628f31628f3ad339f4d524e6d2b549d9208653`
+- **Resulting evidence commit:** recorded in the ADR after the evidence commit is created.
+- **Build:** production source at the baseline commit; no repository gameplay files were edited.
+- **Target:** Championship Track #2, `QUARRY SWITCHBACK` (programme reference name: CANYON).
 
-## Live HTTP observations (partial, 2026-10-16)
+## Temporary direct-start harness
 
-- **Source/build commit:** `93b9c1ec2997b93d57201dae15c2f00bd3e4bb29` (`docs: refresh C0 provenance after GitHub rebase`); the working tree was clean at launch. No gameplay files were changed for this run.
-- **Runtime method:** served the existing static project with Python's standard-library server: `python3 -m http.server 8765 --bind 127.0.0.1 --directory /home/robot/Projects/antoni_game`; opened `http://127.0.0.1:8765/`.
-- **Viewport:** in-app browser at 1920×1080 CSS pixels, `devicePixelRatio=1`.
-- **Live event and player/AI timing:** entered the actual five-car championship race, with the player and four production AI opponents. The championship UI starts at Track #1, PINE RIDGE RUN; it presents no Track #2 selector. Progressing to Event 2 requires completing all six Track #1 laps. This trial remained on lap 1/6 and did not record a completed player or AI lap. Therefore it provides no accepted QUARRY SWITCHBACK player lap time or production-AI timing. Synthetic handling-check route times remain supplementary only.
-- **Live speed observation:** during a full-throttle live Track #1 start, the HUD showed 249 km/h at displayed race time 0:01.93; a later live sample showed 254 km/h. These are uncontrolled Track #1 observations, do not establish 0-to-maximum timing or maximum usable speed, and are not accepted as the requested C0 acceleration result. The physics-core measurements above remain supplementary only.
-- **Performance instrumentation:** F2 overlay snapshots during this short live race at 1920×1080 reported 144 FPS and 7.0 ms frame time; update was approximately 0.1–0.2 ms and render 0.4–0.7 ms. These intermittent snapshots are not a sustained/full-race stability measurement. Earlier readings from a separate browser tab were erratic and are excluded.
-- **Engine audio:** the game showed SOUND ON and the live race activated the game's audio. The available browser interface did not provide audio output capture or a way to listen to it, so launch, acceleration, sustained high-speed, and lift-off behavior could not be assessed audibly. The existing source inspection above remains the only audio evidence.
-- **Screenshots:** representative live frames were visible during browser inspection, including the race, opponents, HUD, vehicle, and F2 overlay. The available screenshot API returned an in-memory image and exposed no supported method to save it under this repository's evidence directory. No durable screenshot files were produced. Track #2 environment screenshots were also unavailable because the actual race could not advance to that event.
+Track #2 is inaccessible through ordinary championship progression until all six laps of Track #1 are complete. To avoid spending the baseline session on that unlock, a disposable copy was made at `/tmp/antoni-game-c0.0Dp4qb`. The only change in the copy was the flow selection in `game.js`:
 
-## Outstanding required evidence and blocker
+```diff
+- newChampionship(){this.trackIndex=0;...}
++ newChampionship(){this.trackIndex=1;...}
+```
 
-- Competent-player lap time on QUARRY SWITCHBACK and its test conditions.
-- Production-AI lap/race timing on QUARRY SWITCHBACK.
-- Controlled live-game 0-to-maximum-usable-speed timing and observed maximum speed.
-- Sustained performance observation during normal racing.
-- Audible engine behavior at launch, acceleration, sustained high speed, and lift-off.
-- Durable screenshots of normal racing, player/wheel rendering, HUD, Track #2 environment, and opponents.
+This makes the existing `newChampionship()` flow present the existing `TRACK_DEFS[1]`, QUARRY SWITCHBACK, directly. It does not change the track definition or any race rules. The copy's `index.html`, `physics-core.js`, `style.css`, and three image assets were byte-identical to the baseline checkout; `game.js` differed only at that `trackIndex` assignment. The copy was served with Python's standard-library static server:
 
-The original `file://` blocker is resolved by serving the project over localhost. C0 remains blocked because the existing championship flow gates Track #2 behind a six-lap Track #1 event, and the available browser tooling cannot persist screenshots or capture audio. No hidden game-state changes or event skips were used. Do not treat Track #1 observations or synthetic checks as substitutes for the requested Track #2 baseline.
+```sh
+python3 -m http.server 8766 --bind 127.0.0.1 --directory /tmp/antoni-game-c0.0Dp4qb
+```
 
-## Conditions and available measurements
+The game was opened at `http://127.0.0.1:8766/`. The temporary copy and server were removed/stopped after evidence capture. Nothing from the bypass was committed. The repository's production source remains unchanged.
 
-- **Automated check:** `node scripts/handling-check.js`, Node `v24.18.0`; result `PASS`. Full stdout is in [c0-handling-check.txt](c0-handling-check.txt).
-- **Acceleration / maximum speed:** the check's controlled 60 Hz physics simulation, using the buggy's source configuration (`acceleration=205`, `maxSpeed=326`), reports 162.9 / 274.7 / 326.0 game units/s after 1 / 2 / 3 seconds from rest. It reaches the configured 326 cap by 3 seconds. This is a deterministic physics-core measurement, not an observed live game run.
-- **Road-to-vehicle width:** source values are 320 world units for the road and 62 world units for the buggy draw width, or 5.16 buggy widths. This is a source measurement; it does not establish the complete rendered width of all road sections (including the bridge).
-- **Current engine behavior (source inspection only):** during racing the engine is a sawtooth oscillator with frequency `(58 + speed × 0.62) × load`, where load can rise with squeal and airborne state reduces frequency to 84%. Engine gain is set to a fixed 0.014 while racing. Squeal is a separate sawtooth whose gain is driven by the supplied squeal value and surface. The check does not measure perceived loudness or provide an audio capture.
-- **Diagnostic route results:** the handling check's separate synthetic Catmull–Rom test loop reports 19.4 seconds for its skilled one-lap controller and 112.0 seconds for six laps, with 0% off-road time. This route and controller are generated inside the test script and are not the game's QUARRY SWITCHBACK course or its production AI; these values are not accepted as C0 track/AI lap times.
+## Runtime conditions and measurements
 
-## Supplementary evidence from source and synthetic checks
+- **Event confirmation:** the game's normal briefing showed `FOREST WORLD · EVENT 02/03`, `QUARRY SWITCHBACK`, 6 laps, 4 rivals, and GRAVEL / DIRT / TARMAC / MUD. The normal race countdown and five-car race then ran with the player and four production AI.
+- **Production-AI race timing:** at displayed race time **0:01.69**, the HUD showed position **2/5** and the start-grid screenshot contains the player and all four AI. At **1:20.14**, a live F2 screenshot showed position **5/5** with two production AI cars visible on course. These are actual game race-clock checkpoints, not the synthetic route loop. The production HUD does not display AI lap counters or per-AI lap times, so no individual AI lap time is asserted.
+- **Player lap:** no completed controlled player lap was recorded. No automated/browser-driven time is represented as a competent-human lap. A competent-human Track #2 lap remains for owner measurement.
+- **Live acceleration / speed:** from a reset HUD speed of **0 km/h** at race clock **4:25.60**, Up was held for **3.00 seconds**. The next live HUD sample at **4:31.05** showed **300 km/h** on **TARMAC** (race-clock interval 5.45 seconds; tool-call latency means the displayed interval is the reproducible bound, not an instrumented exact acceleration duration). The highest live speed observed in this baseline was **300 km/h**. The run did not establish a stable limiter plateau; the source-configured `326` remains supplementary only. A separate 3-second full-throttle sample ended at 254 km/h on GRASS after leaving the road. These are live UI readings, not physics-core substitutes.
+- **Performance:** browser viewport override **1920×1080 CSS pixels**, `devicePixelRatio=1`, with F2 instrumentation enabled. Repeated snapshots were taken across approximately **2:46 of live Track #2 race time** with the four AI running; the player was stationary or off-line for some samples, and this was not a continuous telemetry log. F2 reported **144 FPS**, **6.9–7.1 ms** frame time, **0.0–0.2 ms** update, and **0.3–1.0 ms** render. No visible spike or stutter was observed during the sampled normal race activity. The screenshot at 1:20.14 shows 144 FPS / 6.9 ms, update 0.2 ms, render 0.8 ms.
+- **Audio runtime and implementation:** the race showed SOUND ON and the race path called the existing audio update. In `game.js`, `AudioSystem.ensure()` creates/resumes Web Audio; the race lazily starts a sawtooth engine oscillator. Engine frequency is `(58 + speed × 0.62) × load × airborneFactor`, where load can rise with squeal and airborne factor is 0.84. Engine gain is fixed at 0.014 while racing; the engine is speed-dependent, not throttle-dependent. Audio source/runtime presence is documented, but this browser capture setup cannot genuinely listen to or measure output. Subjective launch, acceleration, sustained-speed and lift-off loudness/race-feel remain **OWNER VERIFICATION REQUIRED**.
 
-- **Competent-player lap time on QUARRY SWITCHBACK:** not captured. The live attempt was Track 1 only; see Live HTTP observations.
-- **Production AI lap times on QUARRY SWITCHBACK:** not captured. Live AI presence was observed on Track 1, without a completed lap time.
-- **Live 0-to-top-speed timing:** not captured; the physics-core result above is a controlled simulation only.
-- **Road-to-vehicle width:** source values are 320 / 62 = 5.16; not a live screenshot measurement.
-- **Engine audio:** source behavior was inspected, but no audible assessment was possible.
+## Durable screenshots
+
+Saved OS-level PNG captures, cropped to the game view, are under `docs/adr/evidence/c0-runtime/`:
+
+- [`quarry-race-opponents.png`](c0-runtime/quarry-race-opponents.png) — Track #2 race at 0:01.69; all four production AI, player, HUD, start/finish area, scenery, and wheels visible.
+- [`quarry-performance-f2.png`](c0-runtime/quarry-performance-f2.png) — live race at 1:20.14; F2 metrics, HUD, player/wheels, two production AI, and track environment visible.
+- [`quarry-player-wheels-hud.png`](c0-runtime/quarry-player-wheels-hud.png) — player/wheel rendering, HUD, F2, and Quarry environment.
+- [`quarry-track2-environment.png`](c0-runtime/quarry-track2-environment.png) — wider Track #2 road/environment view with player, HUD, and F2.
+- [`quarry-live-race-frame-48s.png`](c0-runtime/quarry-live-race-frame-48s.png) and [`quarry-live-race-frame-1m27.png`](c0-runtime/quarry-live-race-frame-1m27.png) — additional live Track #2 race frames.
+
+## Supplementary evidence and owner-only observations
+
+- [`c0-handling-check.txt`](c0-handling-check.txt) is the synthetic physics/route check. Its controlled 60 Hz physics values (162.9 / 274.7 / 326.0 units/s at 1 / 2 / 3 seconds) and generated test-loop lap times are supplementary only; they do not replace the live speed sample or production-AI race checkpoints above.
+- **Owner measurement:** competent-human lap time and test conditions on QUARRY SWITCHBACK.
+- **Owner listening:** subjective engine loudness/race-feel during launch, acceleration, sustained high speed, and lift-off.
+- **Known measurement limits:** the normal HUD has no per-AI lap time display; the recorded AI timing is the production race clock at visible field checkpoints. The live speed probe records the highest observed 300 km/h sample but did not confirm a speed plateau. The sampled F2 values are discrete readings over a live race, not a continuous trace or full six-lap run.
 
 ## Result
 
-C0 has reproducible source and physics-check evidence plus partial live HTTP observations, but it does not satisfy the required Track #2 live-race measurements, audible assessment, or durable screenshots. It is recorded as **BLOCKED**, not technically complete. Complete the outstanding evidence and request owner verification before C1.
+C0's objective baseline evidence is ready for owner review: Track #2 ran from the temporary flow-only harness, production AI were present in the live race and live race-clock checkpoints were recorded, live acceleration/speed readings were captured, performance was sampled repeatedly at 1920×1080, audio implementation/runtime presence was verified, and durable screenshots were saved. Competent-human lap timing and subjective audio judgement are explicitly owner-only. No product gameplay source changed. C0 is **TECHNICALLY COMPLETE — OWNER VERIFICATION REQUIRED**; do not mark it OWNER VERIFIED or begin C1 until the owner approves.
