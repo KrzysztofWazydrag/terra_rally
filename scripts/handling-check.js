@@ -25,6 +25,10 @@ const reversingWheels=wheels({frontWheelPhase:.5,rearWheelPhase:.5},{throttle:0,
 const brakingWheels=wheels({frontWheelSpeed:160,rearWheelSpeed:160},{throttle:0,brake:1,steer:0},160,0,.35);
 const slidingWheels=wheels({},{throttle:1,brake:0,steer:-1},160,.3,.35);
 const counterSteer=(()=>{const s=car();for(let i=0;i<55;i++)Physics.step(s,{throttle:1,brake:0,steer:.5},cfg,DT);const peak=Math.abs(s.slipAngle);for(let i=0;i<40;i++)Physics.step(s,{throttle:0,brake:0,steer:-.5},cfg,DT);return{peak,end:Math.abs(s.slipAngle)};})();
+function hopRun(launchSpeed){const s={z:0,zv:launchSpeed,vx:0,vy:-245},initialMomentum=[s.vx,s.vy];let frames=0,maxHeight=s.z;while(frames<120){Physics.stepVertical(s,DT,420);maxHeight=Math.max(maxHeight,s.z);frames++;if(s.z===0&&s.zv===0)break;}return{duration:frames*DT,height:maxHeight,impact:launchSpeed,momentumPreserved:s.vx===initialMomentum[0]&&s.vy===initialMomentum[1]};}
+const roadHop=hopRun(105),roadBump=hopRun(55);
+function suspensionRun(){const s={suspension:-1.15,suspensionVelocity:0},samples=[];for(let i=0;i<150;i++){Physics.stepSuspension(s,DT);samples.push(s.suspension);}return{compression:-1.15,rebound:Math.max(...samples),settled:s.suspension};}
+const suspension=suspensionRun();
 
 function catmull(p0,p1,p2,p3,t){const t2=t*t,t3=t2*t;return{x:.5*(2*p1[0]+(-p0[0]+p2[0])*t+(2*p0[0]-5*p1[0]+4*p2[0]-p3[0])*t2+(-p0[0]+3*p1[0]-3*p2[0]+p3[0])*t3),y:.5*(2*p1[1]+(-p0[1]+p2[1])*t+(2*p0[1]-5*p1[1]+4*p2[1]-p3[1])*t2+(-p0[1]+3*p1[1]-3*p2[1]+p3[1])*t3)};}
 const points=[[430,400],[850,230],[1370,270],[1790,530],[1910,890],[1730,1300],[1340,1530],[900,1490],[430,1280],[220,900]],route=[];
@@ -76,6 +80,11 @@ if(!physicsSource.includes('const slideIntensity = clamp((Math.abs(state.slipAng
 if(!gameSource.includes('clamp(-car.slipAngle*.4,-.18,.18)'))failures.push('VEHICLE POSTURE: grip-limit slide yaw is not visually emphasized');
 if(!gameSource.includes("buggyImage.src = 'assets/player-buggy-topdown.png'")||gameSource.includes('drawTyre(')||!gameSource.includes('g.imageSmoothingEnabled=false'))failures.push('VEHICLE PIPELINE: built-in wheel sprite is not rendered as the sole crisp directional layer');
 if(!gameSource.includes('ctx.translate(c.x+3,c.y+5)')||!gameSource.includes('drawY=car.y-car.z-(car.suspension||0)*3'))failures.push('VEHICLE DEPTH: ground shadow must remain at ground position while the body rises and compresses');
+if(roadHop.duration<.45||roadHop.duration>.6||roadHop.height<11||roadHop.height>15)failures.push(`HOP: duration=${roadHop.duration.toFixed(2)}s height=${roadHop.height.toFixed(1)}, expected brief 0.45–0.60s rise at 11–15 units`);
+if(roadBump.duration<.2||roadBump.duration>.35||roadBump.height<3||roadBump.height>5)failures.push(`BUMP: duration=${roadBump.duration.toFixed(2)}s height=${roadBump.height.toFixed(1)}, expected subtle short 0.20–0.35s movement at 3–5 units`);
+if(!roadHop.momentumPreserved||!roadBump.momentumPreserved)failures.push('HOP: vertical integration changed forward momentum');
+if(suspension.rebound<.05||Math.abs(suspension.settled)>.01)failures.push(`SUSPENSION: compression/rebound response ${suspension.rebound.toFixed(2)} did not settle (${suspension.settled.toFixed(3)})`);
+if(!physicsSource.includes('function stepVertical')||!physicsSource.includes('function stepSuspension')||!gameSource.includes('c.zv=Math.max(c.zv,105)')||!gameSource.includes('c.zv=Math.max(c.zv,55)')||!gameSource.includes('TerraPhysics.stepVertical(c,dt)'))failures.push('HOP SYSTEM: production game is not using the small step/bump and spring helpers');
 if(rollingWheels.frontWheelSpeed<130||rollingWheels.frontWheelPhase===0)failures.push('WHEELS: straight-line rolling did not animate from actual speed');
 if(stoppedWheels.frontWheelSpeed!==0||stoppedWheels.frontWheelPhase!==stoppedPhase)failures.push('WHEELS: rotation continued after the car stopped');
 if(reversingWheels.frontWheelPhase>=.5)failures.push('WHEELS: phase did not reverse while reversing');
@@ -105,6 +114,7 @@ console.log(`low-speed steering yaw=${lowSpeedTurn.maxYaw.toFixed(3)} after 0.55
 console.log(`full-throttle slip=${flatOut.maxSlip.toFixed(3)} distance=${flatOut.distance.toFixed(1)}`);
 console.log(`lift slip=${lift.maxSlip.toFixed(3)} speed=${Math.abs(lift.state.speed).toFixed(1)}`);
 console.log(`oil slip=${oil.maxSlip.toFixed(3)} airborne-yaw=${airborne.maxYaw.toFixed(3)}`);
+console.log(`road hop=${roadHop.duration.toFixed(2)}s peak=${roadHop.height.toFixed(1)} impact=${roadHop.impact} momentum=preserved bump=${roadBump.duration.toFixed(2)}s peak=${roadBump.height.toFixed(1)} momentum=preserved suspension compression=-1.15 rebound=${suspension.rebound.toFixed(2)} settle=${suspension.settled.toFixed(3)}`);
 console.log(`wheels rolling=${rollingWheels.frontWheelSpeed.toFixed(1)} stopped=${stoppedWheels.frontWheelSpeed.toFixed(1)} braking=${brakingWheels.frontWheelSpeed.toFixed(1)} skid-delta=${(slidingWheels.rearWheelSpeed-slidingWheels.frontWheelSpeed).toFixed(1)} steer=${slidingWheels.frontSteer.toFixed(2)}`);
 console.log(`lap flat-out=${fullLap.time.toFixed(1)}s off-road=${(fullLap.offRatio*100).toFixed(0)}% skilled=${skilledLap.time.toFixed(1)}s off-road=${(skilledLap.offRatio*100).toFixed(0)}%`);
 console.log(`cone launched=${coneHit} velocity=${Math.hypot(cone.vx,cone.vy).toFixed(1)} spin=${cone.spin.toFixed(1)}`);

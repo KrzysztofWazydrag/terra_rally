@@ -8,6 +8,33 @@
   const mod = (n, m) => ((n % m) + m) % m;
   const angleDelta = (a, b) => mod(b - a + Math.PI, Math.PI * 2) - Math.PI;
 
+  function stepVertical(state, dt, gravity = 420) {
+    state.z ||= 0;
+    state.zv ||= 0;
+    if (state.z <= 0 && state.zv <= 0) { state.z = 0; state.zv = 0; return 0; }
+    state.z += state.zv * dt;
+    state.zv -= gravity * dt;
+    if (state.z <= 0) {
+      const impactSpeed = Math.max(0, -state.zv);
+      state.z = 0;
+      state.zv = 0;
+      return impactSpeed;
+    }
+    return 0;
+  }
+
+  function stepSuspension(state, dt) {
+    state.suspension ||= 0;
+    state.suspensionVelocity ||= 0;
+    state.suspensionVelocity += (-150 * state.suspension - 14 * state.suspensionVelocity) * dt;
+    state.suspension += state.suspensionVelocity * dt;
+    if (Math.abs(state.suspension) < .002 && Math.abs(state.suspensionVelocity) < .01) {
+      state.suspension = 0;
+      state.suspensionVelocity = 0;
+    }
+    return state.suspension;
+  }
+
   function step(state, input, cfg, dt) {
     state.angularVelocity ||= 0;
     const speedBefore = Math.hypot(state.vx, state.vy);
@@ -113,5 +140,5 @@
     return state;
   }
 
-  return { step, hitCone, updateWheelState, angleDelta, clamp };
+  return { step, stepVertical, stepSuspension, hitCone, updateWheelState, angleDelta, clamp };
 });

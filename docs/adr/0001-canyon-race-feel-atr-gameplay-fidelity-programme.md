@@ -1,6 +1,6 @@
 # ADR — Canyon Race Feel & ATR Gameplay Fidelity Programme
 
-- **Status:** Accepted as the authoritative implementation plan; C0 is OWNER VERIFIED, C1–C2 are TECHNICALLY COMPLETE, and iterative phase execution is active
+- **Status:** Accepted as the authoritative implementation plan; C0 is OWNER VERIFIED, C1–C4 are TECHNICALLY COMPLETE, and iterative phase execution is active
 - **Date:** 2026-10-16
 - **Decision owners:** Game owner and implementation agent
 - **Scope:** Championship Track #2 only, working name **CANYON**
@@ -16,7 +16,7 @@
 | C1 | Vehicle pace | TECHNICALLY COMPLETE — OWNER VERIFICATION REQUIRED | [C1 vehicle pace evidence](evidence/c1-vehicle-pace.md) | No |
 | C2 | Handling / grip limit | TECHNICALLY COMPLETE | [C2 handling evidence](evidence/c2-handling.md) | No |
 | C3 | Vehicle animation pipeline | TECHNICALLY COMPLETE | [C3 vehicle pipeline evidence](evidence/c3-vehicle-animation.md), [race-scale screenshot](evidence/c3-runtime/c3-track1-race-vehicle.png) | No |
-| C4 | Hop / suspension | NOT STARTED | Not captured | No |
+| C4 | Hop / suspension | TECHNICALLY COMPLETE | [C4 hop evidence](evidence/c4-hop.md), [handling-check output](evidence/c4-handling-check.txt) | No |
 | C5 | Canyon track rebuild | NOT STARTED | Not captured | No |
 | C6 | Pickup system | NOT STARTED | Not captured | No |
 | C7 | AI competition | NOT STARTED | Not captured | No |
@@ -184,17 +184,27 @@ Capture a reproducible before-state for the existing Track #2 (currently named `
 
 ### Phase C4 — Hop / suspension
 
-**Status: NOT STARTED**
+**Status: TECHNICALLY COMPLETE**
 
 **Scope:** small road bump, brief airborne state, momentum preservation, springy landing, and audio feedback. No stunt ramps.
 
-- [ ] Add a small road step/bump interaction.
-- [ ] Keep the airborne interval brief and preserve forward momentum.
-- [ ] Reduce steering authority while airborne.
-- [ ] Show soft compression and a small rebound on landing.
-- [ ] Add a restrained impact sound and retain the ground shadow beneath the airborne vehicle.
+- [x] Replace the large ramp presentation with a low-profile road step and keep the existing step/bump locations.
+- [x] Keep the powered airborne interval brief (0.53 s / 14.0 units) and the bump interval subtle (0.28 s / 4.1 units); vertical integration preserves horizontal momentum.
+- [x] Retain strongly reduced steering while airborne; synthetic yaw check is 0.012 versus 0.941 for a high-speed corner.
+- [x] Add damped landing compression and a small rebound (1.15 compression, 0.10 rebound peak, settled to zero).
+- [x] Trigger restrained jump and landing tones and retain the C3 ground shadow beneath the airborne vehicle.
 
-**Acceptance evidence:** repeatable hop capture and handling/audio notes showing the short rise, limited steering, and immediate drive continuation. Owner verification required.
+**Acceptance evidence:** repeatable hop trajectory capture and handling/audio notes showing the short rise, limited steering, and immediate drive continuation. Owner review is welcome during normal iteration but is not a gate.
+
+**C4 evidence record (2026-10-16):**
+
+- **Status:** TECHNICALLY COMPLETE. The phase may proceed without owner sign-off under the accepted iterative workflow.
+- **Source/baseline commit:** `ae4d3f50ff4dd0e055334b1ec251816ddeedf5d2` (C3 provenance record).
+- **Resulting implementation commit:** pending C4 implementation commit.
+- **Result/evidence:** [`C4 hop evidence`](evidence/c4-hop.md) and [`repeatable handling-check output`](evidence/c4-handling-check.txt).
+- **Implementation:** added independently stepped vertical hop/bump trajectories, a damped suspension spring, low-profile step artwork, and player jump/landing tone triggers. The Track 1/2/3 route definitions and hop/bump locations are unchanged. No Canyon track work was started.
+- **Live runtime:** the current checkout was served from localhost and started in the browser as the normal production game; the HUD and controls ran in a five-car, six-lap race. A brief operator throttle check reached 113 km/h but ran off-road; it is not presented as a calibrated handling result.
+- **Known limitation:** the operator smoke run did not yield a controlled airborne screenshot. The numeric hop capture is repeatable and uses the same helpers called by production; no image of an airborne frame is claimed. Subjective impact loudness remains unassessed and non-blocking during normal iteration.
 
 ### Phase C5 — Canyon track rebuild
 

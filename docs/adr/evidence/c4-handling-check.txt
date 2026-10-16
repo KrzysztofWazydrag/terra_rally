@@ -1,0 +1,16 @@
+clean-corner slip=5.0° squeal=0.00 mild-steer slip=0.7° squeal=0.00
+grip-limit slip=11.7° squeal=0.65 yaw=0.941 S-bend squeal=1.00
+countersteer 4.7° -> 2.7° in 0.67s
+low-speed steering yaw=2.660 after 0.55s
+full-throttle slip=0.282 distance=533.5
+lift slip=0.155 speed=93.7
+oil slip=0.728 airborne-yaw=0.012
+road hop=0.53s peak=14.0 impact=105 momentum=preserved bump=0.28s peak=4.1 momentum=preserved suspension compression=-1.15 rebound=0.10 settle=0.000
+wheels rolling=160.0 stopped=0.0 braking=25.7 skid-delta=16.4 steer=-1.00
+lap flat-out=17.1s off-road=0% skilled=19.4s off-road=0%
+cone launched=true velocity=86.0 spin=13.3
+six-lap AI=112.0s off-road=0%
+acceleration 1–6s=99.5/179.2/239.8/284.5/316.9/326.0 95%=4.75s 99%=5.23s cap=5.37s max=326
+surface settled grass=225.0 (69%) mud=139.1 (43%) entry1s grass=239.8 mud=209.6
+proportions road=320 car=62 five-car field=310 bridge=282
+PASS handling checks
