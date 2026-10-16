@@ -1,6 +1,6 @@
 # ADR — Canyon Race Feel & ATR Gameplay Fidelity Programme
 
-- **Status:** Accepted as the authoritative implementation plan; C0 is OWNER VERIFIED, C1 is TECHNICALLY COMPLETE, and iterative phase execution is active
+- **Status:** Accepted as the authoritative implementation plan; C0 is OWNER VERIFIED, C1–C2 are TECHNICALLY COMPLETE, and iterative phase execution is active
 - **Date:** 2026-10-16
 - **Decision owners:** Game owner and implementation agent
 - **Scope:** Championship Track #2 only, working name **CANYON**
@@ -154,7 +154,8 @@ Capture a reproducible before-state for the existing Track #2 (currently named `
 
 - **Status:** TECHNICALLY COMPLETE.
 - **Source/baseline commit:** `03ef0a272e2efeac7412f4343d89518f1c8a26ef` (C0 waiver / iterative-workflow decision).
-- **Result/evidence:** see [`C2 handling evidence`](evidence/c2-handling.md); resulting implementation commit is recorded after commit.
+- **Resulting implementation commit:** `3bc051344d32931cb6eda4d0163d476b8fe5296e` (`feat: tune grip-limit slide feedback for C2`).
+- **Result/evidence:** see [`C2 handling evidence`](evidence/c2-handling.md).
 - **Implementation:** squeal intensity now derives only from actual slip angle and speed; steering load by itself no longer adds squeal. Increased tyre-squeal mix level and visual slip posture for readable limit behavior. Core steering, grip, oil, and off-road parameters were otherwise unchanged.
 - **Limitations:** objective corner, lift, and countersteer evidence is from the repeatable physics-core check. A live game smoke test confirmed the race starts and accepts steering/throttle input, but controlled high-speed driving did not stay on the racing line long enough to be a second calibrated handling measurement. Subjective audio loudness remains something to evaluate during normal iteration, not a phase gate.
 
