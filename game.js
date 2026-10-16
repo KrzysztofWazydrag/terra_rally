@@ -40,6 +40,7 @@
       this.frames=[];
       for(let i=0;i<this.directions;i++){
         const frame=document.createElement('canvas'),g=frame.getContext('2d'),a=i/this.directions*TAU;
+        g.imageSmoothingEnabled=false;
         frame.width=96;frame.height=112;g.translate(48,56);g.rotate(a+Math.PI);
         g.drawImage(this.image,-31,-38,62,76);
         g.globalCompositeOperation='source-atop';
@@ -47,16 +48,6 @@
         shine.addColorStop(0,Math.sin(a)>.05?'#07131a33':'#ffe6a616');shine.addColorStop(.52,'#ffffff00');shine.addColorStop(1,Math.sin(a)>.05?'#ffe6a616':'#07131a33');
         g.fillStyle=shine;g.fillRect(-33,-40,66,80);g.globalCompositeOperation='source-over';this.frames.push(frame);
       }
-    }
-    drawTyre(target,x,y,steer,phase,spin,slip){
-      target.save();target.translate(x,y);target.rotate(steer);
-      target.fillStyle='#111516';target.beginPath();target.ellipse(0,0,5,10,0,0,TAU);target.fill();
-      target.save();target.beginPath();target.ellipse(0,0,4.7,9.7,0,0,TAU);target.clip();
-      const motion=clamp(Math.abs(spin)/120,0,1),offset=mod(phase,1)*8;
-      target.globalAlpha=.3+motion*.55;target.fillStyle='#a28d74';
-      for(let band=-2;band<=2;band++){const py=band*8-12+offset;target.fillRect(-5,py,10,2);}
-      if(slip>.08){target.globalAlpha=clamp((slip-.08)*1.8,0,.34);target.fillStyle='#d7c19a';target.fillRect(-4,-9,8,18);}
-      target.restore();target.restore();
     }
     draw(target,car,hue=0){
       if(!this.frames.length)return false;
@@ -66,13 +57,7 @@
       const roll=clamp((car.steerInput||0)*.045+car.angularVelocity*.055,-.12,.12),drawY=car.y-car.z-(car.suspension||0)*3;
       target.save();target.translate(car.x+Math.cos(frameAngle)*roll*3,drawY+Math.sin(frameAngle)*roll*3);
       if(hue)target.filter=`hue-rotate(${hue}deg) saturate(1.35)`;target.drawImage(this.frames[index],-48,-56);target.restore();
-      target.save();target.translate(car.x,drawY);target.rotate(frameAngle);
-      const steer=(car.frontSteer||0)*.2,slip=Math.abs(car.slipAngle||0);
-      this.drawTyre(target,-26,-26,steer,car.frontWheelPhase||0,car.frontWheelSpeed||0,0);
-      this.drawTyre(target,26,-26,steer,car.frontWheelPhase||0,car.frontWheelSpeed||0,0);
-      this.drawTyre(target,-26,25,0,car.rearWheelPhase||0,car.rearWheelSpeed||0,slip);
-      this.drawTyre(target,26,25,0,car.rearWheelPhase||0,car.rearWheelSpeed||0,slip);
-      target.restore();return true;
+      return true;
     }
   }
   const vehicleAtlas = new DirectionalVehicleAtlas(buggyImage,32);
@@ -359,7 +344,7 @@
     drawCar(c){
       if(!this.visible(c.x,c.y,90))return;this.perf.visibleObjects++;
       const lift=c.z,rise=clamp(lift/130,0,.8);
-      ctx.save();ctx.translate(c.x+3+rise*3,c.y+5+rise*5);ctx.rotate(c.angle);ctx.globalAlpha=.32-rise*.12;ctx.fillStyle='#07100d';
+      ctx.save();ctx.translate(c.x+3,c.y+5);ctx.rotate(c.angle);ctx.globalAlpha=.32-rise*.12;ctx.fillStyle='#07100d';
       ctx.beginPath();ctx.ellipse(0,0,14,24,0,0,TAU);ctx.fill();
       for(const x of [-24,24])for(const y of [-25,25]){ctx.beginPath();ctx.ellipse(x,y,4.5,8,0,0,TAU);ctx.fill();}
       ctx.restore();

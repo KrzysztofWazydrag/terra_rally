@@ -74,6 +74,8 @@ if(mildSteer.maxSlip<.10&&mildSteer.maxSqueal>.02)failures.push(`SQUEAL: steerin
 if(flatOut.maxSlip<.22||flatOut.maxSqueal<.65)failures.push(`SQUEAL: grip-limit S-bend slip=${flatOut.maxSlip.toFixed(3)}rad level=${flatOut.maxSqueal.toFixed(2)}, expected obvious slip feedback`);
 if(!physicsSource.includes('const slideIntensity = clamp((Math.abs(state.slipAngle) - .10) / .16')||!gameSource.includes('squeal*.055*rough'))failures.push('SQUEAL AUDIO: level is not tied to actual slip intensity or its gain was not raised for legibility');
 if(!gameSource.includes('clamp(-car.slipAngle*.4,-.18,.18)'))failures.push('VEHICLE POSTURE: grip-limit slide yaw is not visually emphasized');
+if(!gameSource.includes("buggyImage.src = 'assets/player-buggy-topdown.png'")||gameSource.includes('drawTyre(')||!gameSource.includes('g.imageSmoothingEnabled=false'))failures.push('VEHICLE PIPELINE: built-in wheel sprite is not rendered as the sole crisp directional layer');
+if(!gameSource.includes('ctx.translate(c.x+3,c.y+5)')||!gameSource.includes('drawY=car.y-car.z-(car.suspension||0)*3'))failures.push('VEHICLE DEPTH: ground shadow must remain at ground position while the body rises and compresses');
 if(rollingWheels.frontWheelSpeed<130||rollingWheels.frontWheelPhase===0)failures.push('WHEELS: straight-line rolling did not animate from actual speed');
 if(stoppedWheels.frontWheelSpeed!==0||stoppedWheels.frontWheelPhase!==stoppedPhase)failures.push('WHEELS: rotation continued after the car stopped');
 if(reversingWheels.frontWheelPhase>=.5)failures.push('WHEELS: phase did not reverse while reversing');

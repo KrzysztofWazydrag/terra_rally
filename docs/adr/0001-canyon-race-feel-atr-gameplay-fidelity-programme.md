@@ -15,7 +15,7 @@
 | C0 | Baseline / evidence | OWNER VERIFIED | [C0 baseline evidence](evidence/c0-baseline.md), [runtime screenshots](evidence/c0-runtime/), and [supplementary handling-check output](evidence/c0-handling-check.txt). | Yes |
 | C1 | Vehicle pace | TECHNICALLY COMPLETE — OWNER VERIFICATION REQUIRED | [C1 vehicle pace evidence](evidence/c1-vehicle-pace.md) | No |
 | C2 | Handling / grip limit | TECHNICALLY COMPLETE | [C2 handling evidence](evidence/c2-handling.md) | No |
-| C3 | Vehicle animation pipeline | NOT STARTED | Not captured | No |
+| C3 | Vehicle animation pipeline | TECHNICALLY COMPLETE | [C3 vehicle pipeline evidence](evidence/c3-vehicle-animation.md), [race-scale screenshot](evidence/c3-runtime/c3-track1-race-vehicle.png) | No |
 | C4 | Hop / suspension | NOT STARTED | Not captured | No |
 | C5 | Canyon track rebuild | NOT STARTED | Not captured | No |
 | C6 | Pickup system | NOT STARTED | Not captured | No |
@@ -161,17 +161,25 @@ Capture a reproducible before-state for the existing Track #2 (currently named `
 
 ### Phase C3 — Vehicle animation pipeline
 
-**Status: NOT STARTED**
+**Status: TECHNICALLY COMPLETE**
 
 **Scope:** remove pasted-looking wheel animation, integrate wheel visuals, directional vehicle frames, suspension/hop presentation, and contact shadow.
 
-- [ ] Select and implement an integrated wheel rendering approach.
-- [ ] Keep directional frames visually coherent, predominantly top-down, and consistent in scale/perspective.
-- [ ] Show suspension/body response without obscuring vehicle orientation.
-- [ ] Keep a small contact shadow under the car and separate it from the body during a hop.
-- [ ] Inspect the car at normal race scale for seams, floating layers, or mismatched perspective.
+- [x] Integrate the existing sprite's built-in wheel appearance into all directional frames and remove the duplicate overlaid wheel layer.
+- [x] Keep the 32-direction frames predominantly top-down and consistent in scale/perspective; disable smoothing on atlas frames to preserve the source's pixel edges.
+- [x] Retain body rise/compression in the sprite draw position without obscuring vehicle orientation.
+- [x] Keep contact and wheel shadows at the vehicle's ground position while the body rises; shadow opacity reduces with height.
+- [x] Inspect the vehicle at normal race scale; the durable race screenshot shows aligned built-in wheels without the former separate tread overlays.
 
-**Acceptance evidence:** screenshots/video across representative headings and steering states, including a hop if available; owner confirms visual coherence.
+**Acceptance evidence:** screenshot/video across representative headings and steering states, including a hop if available. Owner feedback can refine the appearance during normal iteration.
+
+**C3 evidence record (2026-10-16):**
+
+- **Status:** TECHNICALLY COMPLETE.
+- **Source/baseline commit:** `2f631a7d9c99a73c9fd4084e578706db9e800aa6` (C2 provenance record).
+- **Result/evidence:** see [`C3 vehicle pipeline evidence`](evidence/c3-vehicle-animation.md) and [`race-scale vehicle screenshot`](evidence/c3-runtime/c3-track1-race-vehicle.png); resulting implementation commit is recorded after commit.
+- **Implementation:** the existing top-down buggy art already contains its four wheels. Directional frames now use those integrated wheels as the only wheel layer; the separate procedural tread graphics were removed. The contact shadow remains at the ground point instead of shifting upward with the car's jump height. No vehicle art, handling, track, or jump rules changed.
+- **Limitations:** the durable image captures normal race scale and multiple car headings, but no airborne frame was captured; C4 will verify the hop presentation. The browser screenshot is from Track 1 because C3 is a shared vehicle-rendering pipeline change; Track 2 remains untouched until C5.
 
 ### Phase C4 — Hop / suspension
 
@@ -297,4 +305,4 @@ Do not silently change a decision when implementation evidence shows it may be w
 
 ## Current session boundary
 
-This ADR records decisions and the C0–C10 checklist. C0 is **OWNER VERIFIED**; the owner accepted its technical evidence as sufficient and waived human lap timing and subjective audio feel as gates, to be evaluated later during normal iteration. C1 and C2 are technically complete. C3 is next; proceed unless owner feedback is genuinely needed under the iterative-workflow direction.
+This ADR records decisions and the C0–C10 checklist. C0 is **OWNER VERIFIED**; the owner accepted its technical evidence as sufficient and waived human lap timing and subjective audio feel as gates, to be evaluated later during normal iteration. C1–C3 are technically complete. C4 is next; proceed unless owner feedback is genuinely needed under the iterative-workflow direction.
