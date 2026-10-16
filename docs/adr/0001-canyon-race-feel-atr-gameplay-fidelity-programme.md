@@ -18,7 +18,7 @@
 | C3 | Vehicle animation pipeline | TECHNICALLY COMPLETE | [C3 vehicle pipeline evidence](evidence/c3-vehicle-animation.md), [race-scale screenshot](evidence/c3-runtime/c3-track1-race-vehicle.png) | No |
 | C4 | Hop / suspension | TECHNICALLY COMPLETE | [C4 hop evidence](evidence/c4-hop.md), [handling-check output](evidence/c4-handling-check.txt) | No |
 | C5 | Canyon track rebuild | OWNER VERIFIED | [C5 Canyon evidence](evidence/c5-canyon.md), [runtime screenshots](evidence/c5-runtime/) | Yes |
-| C6 | Pickup system | NOT STARTED | Not captured | No |
+| C6 | Pickup system | TECHNICALLY COMPLETE — OWNER VERIFICATION REQUIRED | [C6 pickup evidence](evidence/c6-pickups.md), [runtime screenshots](evidence/c6-runtime/) | Yes |
 | C7 | AI competition | NOT STARTED | Not captured | No |
 | C8 | Race presentation | NOT STARTED | Not captured | No |
 | C9 | Performance / polish gate | NOT STARTED | Not captured | No |
@@ -234,17 +234,27 @@ Capture a reproducible before-state for the existing Track #2 (currently named `
 
 ### Phase C6 — Pickup system
 
-**Status: NOT STARTED**
+**Status: TECHNICALLY COMPLETE — OWNER VERIFICATION REQUIRED**
 
 **Scope:** shared floating/bobbing pickup, 3D-like readability, single-racer collection, AI collection, disappearance/respawn, and collection feedback.
 
-- [ ] Show one active object at each pickup location with a ground shadow and clear vertical bob.
-- [ ] Ensure a pickup can be awarded to only one racer.
-- [ ] Allow player and AI to collect from the same pool.
-- [ ] Define and implement disappearance and respawn behavior.
-- [ ] Add readable collection sound/feedback without overwhelming the race.
+- [x] Show one active object at each pickup location with a ground shadow and clear vertical bob.
+- [x] Ensure a pickup can be awarded to only one racer.
+- [x] Allow player and AI to collect from the same pool.
+- [x] Define and implement disappearance and respawn behavior.
+- [x] Route collection through the existing pickup audio effects and add readable player/rival feedback.
 
 **Acceptance evidence:** player-first and AI-first collection captures, single-winner result, respawn demonstration or documented rule, and owner verification.
+
+- [x] Use one shared pickup pool for all racers, resolving a single closest eligible claimant per pickup.
+- [x] Let AI racers steer toward nearby active pickups while retaining hazard avoidance.
+- [x] Keep each pickup visible as a bobbing 3D-like object over a stationary ground shadow.
+- [x] Apply its existing reward to whichever racer collects it and make player/rival collection readable.
+- [x] Respawn a claimed pickup after its collector completes one lap; document ordering and verify no same-frame double award.
+
+**Owner verification:** pending. Technical completion does not claim owner approval. See the specific visual/gameplay review request in the C6 evidence report.
+
+**C6 evidence record:** [pickup system report](evidence/c6-pickups.md). Source/baseline commit: `e5a5ed488f878d6b0df99e7dd4b7cac33eb7040f` (C5 owner verification). Implementation/result commit: `1c8afa6246fc095f1ae1deaabcaf872b38ccb414`.
 
 ### Phase C7 — AI competition
 
@@ -326,4 +336,4 @@ Do not silently change a decision when implementation evidence shows it may be w
 
 ## Current session boundary
 
-This ADR records decisions and the C0–C10 checklist. C0 and C5 are **OWNER VERIFIED**. C0's human lap timing and subjective audio feel were waived as gates and may be evaluated later during normal iteration. C1–C4 are technically complete. C6 pickup-system work is next.
+This ADR records decisions and the C0–C10 checklist. C0 and C5 are **OWNER VERIFIED**. C0's human lap timing and subjective audio feel were waived as gates and may be evaluated later during normal iteration. C1–C4 are technically complete. C6 is technically complete and awaits owner verification; C7 is next after that review.
