@@ -1,6 +1,6 @@
 # ADR — Canyon Race Feel & ATR Gameplay Fidelity Programme
 
-- **Status:** Accepted as the authoritative implementation plan; C0 is OWNER VERIFIED, C1–C4 are TECHNICALLY COMPLETE, and iterative phase execution is active
+- **Status:** Accepted as the authoritative implementation plan; C0, C5 and C6 are OWNER VERIFIED, C1–C4 are technically complete, C7 is TECHNICALLY COMPLETE pending gameplay review, and iterative phase execution is active
 - **Date:** 2026-10-16
 - **Decision owners:** Game owner and implementation agent
 - **Scope:** Championship Track #2 only, working name **CANYON**
@@ -19,7 +19,7 @@
 | C4 | Hop / suspension | TECHNICALLY COMPLETE | [C4 hop evidence](evidence/c4-hop.md), [handling-check output](evidence/c4-handling-check.txt) | No |
 | C5 | Canyon track rebuild | OWNER VERIFIED | [C5 Canyon evidence](evidence/c5-canyon.md), [runtime screenshots](evidence/c5-runtime/) | Yes |
 | C6 | Pickup system | OWNER VERIFIED | [C6 pickup evidence](evidence/c6-pickups.md), [runtime screenshots](evidence/c6-runtime/) | Yes |
-| C7 | AI competition | NOT STARTED | Not captured | No |
+| C7 | AI competition | TECHNICALLY COMPLETE — OWNER VERIFICATION REQUIRED | [C7 AI competition evidence](evidence/c7-ai.md), [live Canyon AI race capture](evidence/c7-runtime/c7-live-race.png) | No |
 | C8 | Race presentation | NOT STARTED | Not captured | No |
 | C9 | Performance / polish gate | NOT STARTED | Not captured | No |
 | C10 | Canyon golden baseline | NOT STARTED | Not captured | No |
@@ -258,18 +258,32 @@ Capture a reproducible before-state for the existing Track #2 (currently named `
 
 ### Phase C7 — AI competition
 
-**Status: NOT STARTED**
+**Status: TECHNICALLY COMPLETE — OWNER VERIFICATION REQUIRED**
 
 **Scope:** racing line, braking/lift points, corner speed, overtaking, hazard interaction, pickup competition, and believable mistakes.
 
-- [ ] Give the five racers varied, usable racing lines.
-- [ ] Make AI choose appropriate braking/lift points and corner speeds for Canyon.
-- [ ] Support overtaking and sensible line defense without identical-path convergence.
-- [ ] Make AI react to oil, cones, collisions, and pickups.
-- [ ] Allow occasional believable mistakes while avoiding obvious extreme rubber-banding.
-- [ ] Measure AI lap times and race competitiveness against C0/C5 conditions.
+- [x] Give the five racers varied, usable racing lines.
+- [x] Make AI choose appropriate braking/lift points and corner speeds for Canyon.
+- [x] Support overtaking and sensible line defense without identical-path convergence.
+- [x] Make AI react to oil, cones, collisions, and pickups.
+- [x] Allow occasional believable mistakes while avoiding obvious extreme rubber-banding.
+- [x] Measure AI lap times and race competitiveness over three full multi-car runs.
 
 **Acceptance evidence:** repeatable multi-car race captures and lap-time results showing competitive behavior, hazard/pickup interaction, and no obvious rubber-band jumps. Owner verification required.
+
+**C7 implementation and measurement record (2026-10-16):**
+
+- **Status:** TECHNICALLY COMPLETE — OWNER VERIFICATION REQUIRED. Stop here for owner gameplay review; C8 has not started.
+- **Source/baseline commit:** `fd6e5595d72f16f38c1201eb2b89ac622e427f64` (C6 owner approval record).
+- **Resulting implementation/evidence commit:** `81e03a3d6d953a222c95fd3bdb4bc1af3ed88f12` (`feat: improve Canyon AI competition for C7`).
+- **Evidence:** [C7 AI competition report](evidence/c7-ai.md) and [live Canyon AI race capture](evidence/c7-runtime/c7-live-race.png).
+- **Implementation:** rebuilt the production AI controller around precomputed route arc length and curvature; uses corner-aware speed targets/braking reach, outside-to-apex line planning, lane candidates, nearby-racer passing/defense selection, and oil/cone/pickup line planning. Added deterministic, occasional short lift/line-hesitation mistakes. Narrowed the default AI lane spread to keep five-car traffic usable on Canyon.
+- **Owner speed/steering feedback:** AI target speed is multiplied by 1.5 before capping at the same physical surface/damage/temporary-speed limit used by shared production physics. AI steering demand is multiplied by 1.25 before the normal `[-1, 1]` input clamp. These are controller changes; no AI-only grip, acceleration, top-speed, or position-based catch-up bonus was added.
+- **Measurements:** three 60 Hz, zero-upgrade, five-car, six-lap production-controller runs (seeds 311, 1907, 8191) finished at a 190.97-second median last-finisher time (range 190.97–191.03 seconds); finish order was 4, 1, 3, 5, 2 in all three runs. The 90 completed lap splits had a 30.36-second median (27.61–33.87 seconds). Against the five-run pre-C7 controller matrix (284.60–301.08 seconds, 288.05-second median to all finish), the full-race pace is about 1.51× faster. Four stable lead changes were recorded in each run; hazard and pickup outcomes are itemized in the report.
+- **Fairness and shared systems:** all racers use the shared `TerraPhysics.step`, buggy profile, collision handling, hazards and pickup collection. No physics-core, track-definition, pickup-system, audio, or renderer changes were made. No catch-up/rubber-band logic was added.
+- **Validation:** `node --check game.js`; `node scripts/ai-competition-check.js`; `node scripts/canyon-course-check.js`; `node scripts/handling-check.js`; `node scripts/pickup-system-check.js`; `git diff --check` all passed.
+- **Capture method:** a disposable runtime copy at `/tmp/terra-rally-c7-verify` exposed the game instance and selected existing Track #2 directly. The 1600×900 image was captured from the production game canvas after a 25-second all-AI runtime sample; the temporary caption records that sample's live HUD values. The course definition and production systems were unchanged by the harness.
+- **Known review points:** car 4 won each of the three runs (2.77–15.16 seconds ahead); seeded mistakes triggered once across the matrix; per-car grass/mud frame share was 5.7–13.7% using common race duration. The lap pace is faster than the 45–55-second competent-lap target, in line with the owner's request for roughly 1.5× faster AI. Please review competitive feel, dominance, line defense/overtaking, mistakes, hazards/pickups and fairness in play.
 
 ### Phase C8 — Race presentation
 
@@ -336,4 +350,4 @@ Do not silently change a decision when implementation evidence shows it may be w
 
 ## Current session boundary
 
-This ADR records decisions and the C0–C10 checklist. C0, C5 and C6 are **OWNER VERIFIED**. C0's human lap timing and subjective audio feel were waived as gates and may be evaluated later during normal iteration. C1–C4 are technically complete. C7 AI competition is the active phase.
+This ADR records decisions and the C0–C10 checklist. C0, C5 and C6 are **OWNER VERIFIED**. C0's human lap timing and subjective audio feel were waived as gates and may be evaluated later during normal iteration. C1–C4 are technically complete. C7 AI competition is technically complete and awaits owner gameplay review; C8 has not started.

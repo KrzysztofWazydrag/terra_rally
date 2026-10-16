@@ -2,7 +2,7 @@
 
 **Status:** TECHNICALLY COMPLETE — OWNER VERIFICATION REQUIRED
 **Source/baseline:** `fd6e5595d72f16f38c1201eb2b89ac622e427f64`
-**Resulting implementation commit:** recorded in the ADR after the implementation/evidence commit.
+**Resulting implementation commit:** `81e03a3d6d953a222c95fd3bdb4bc1af3ed88f12` (`feat: improve Canyon AI competition for C7`).
 
 ## Conditions
 
