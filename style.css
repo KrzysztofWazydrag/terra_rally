@@ -9,3 +9,39 @@
 .shop-panel{width:min(820px,95vw)}.shop-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:20px}.shop-heading h2{margin-bottom:20px}.wallet{padding:9px 13px;text-align:right;background:#071215;border:1px solid #3b5a57;color:#789c96;font:700 9px "Courier New",monospace}.wallet strong{display:block;color:var(--amber);font-size:21px}.upgrade-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.upgrade-card{display:grid;grid-template-columns:44px 1fr auto;align-items:center;gap:12px;padding:13px;background:#0b181a;border:1px solid #2c4644;border-left:4px solid #5ecfc6}.upgrade-icon{display:grid;place-items:center;width:40px;height:40px;color:#071416;background:#e8d59d;font:900 20px "Courier New",monospace}.upgrade-copy strong{display:block;color:#f1e8bf;font:900 14px "Courier New",monospace}.upgrade-copy span{display:block;margin-top:4px;color:#77928e;font:700 10px "Courier New",monospace}.upgrade-pips{color:var(--orange);letter-spacing:2px;font-size:12px}.buy-button{min-width:91px;border:1px solid #3c807a;background:#17322f;color:#8ff4e7;padding:9px 8px;font:900 11px "Courier New",monospace;cursor:pointer}.buy-button:disabled{opacity:.4;cursor:default}.shop-footer{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-top:19px;color:#728d89;font:700 10px "Courier New",monospace}.champion-panel{text-align:center}.champion-emblem{display:inline-grid;place-items:center;width:86px;height:86px;margin-bottom:13px;border-radius:50%;background:var(--amber);color:#a32f2b;font-size:52px;box-shadow:0 0 0 8px #3e3120,0 0 35px #ffe37377}.champion-panel h2{font-size:52px}
 @keyframes banner{0%{opacity:0;transform:translate(-50%,-50%) scale(.55)}20%{opacity:1;transform:translate(-50%,-50%) scale(1.05)}72%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-70%) scale(.96)}}@keyframes pickup{0%{opacity:0;transform:translate(-50%,10px)}16%,70%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,-15px)}}@keyframes spin{to{transform:rotate(360deg)}}
 @media(max-width:780px){.hud{inset:8px 8px auto;gap:4px;flex-wrap:wrap}.hud-block{min-width:72px;padding:5px 7px}.hud-block strong{font-size:15px}.hud .speed b{font-size:16px}.damage,.turbo{width:95px}.hud .timer{display:none}.attract-card{display:none}.upgrade-grid{grid-template-columns:1fr}.shop-panel{max-height:94vh;overflow:auto}.track-specs{grid-template-columns:80px 90px 1fr}.title-lockup h1{font-size:88px}.controls{font-size:8px}}
+
+/* C8 race HUD: read like a compact arcade instrument panel, with position first. */
+.hud{inset:16px 18px auto;gap:7px;align-items:stretch;text-shadow:0 2px 3px #000,1px 1px #000}
+.hud-block{min-height:56px;padding:8px 12px 9px;background:linear-gradient(180deg,#18292beF,#071114ed);border:1px solid #91aaa080;border-bottom:3px solid #030809;box-shadow:0 5px 15px #0006,inset 0 1px #d4f5df20;clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px)}
+.hud-block span{color:#9bc4bc;font-size:9px;letter-spacing:1.7px}
+.hud-block strong{font-size:20px;font-variant-numeric:tabular-nums}
+.hud .position{display:flex;min-width:136px;flex-direction:column;justify-content:center;border-color:#ffb25b88;border-bottom-color:#d95732;background:linear-gradient(145deg,#56291feF,#10191bed 72%);box-shadow:0 5px 18px #0008,inset 0 1px #ffe0a044}
+.hud .position span{color:#ffc17b}
+.hud .position strong{display:flex;align-items:baseline;gap:8px;margin-top:3px;color:#fff1c3;line-height:.92}
+.hud .position em{font:900 35px/.9 Impact,"Arial Black",sans-serif;font-style:normal;letter-spacing:.3px;text-shadow:2px 3px #ae3d2e,0 0 16px #ffb34070}
+.hud .position small{color:#b8c7bb;font:900 10px "Courier New",monospace;letter-spacing:1px}
+.hud .position[data-rank="1"] em{color:#ffe17b}
+.hud .position[data-rank="5"] em{color:#ff9b70}
+.hud .lap{min-width:106px;margin-right:auto}
+.lap-progress{display:block;height:3px;margin-top:7px;overflow:hidden;background:#263738}
+.lap-progress b{display:block;width:0;height:100%;background:linear-gradient(90deg,#50e1d6,#ffcf65);box-shadow:0 0 8px #5bf3dc;transition:width .15s linear}
+.hud .speed{min-width:142px;border-color:#f3cb6b7a}
+.hud .speed b{font-size:31px;color:#ffe17b;text-shadow:0 0 16px #ffc84c66}
+.hud .speed[data-speed="quick"] b{color:#ffbd60}
+.hud .speed[data-speed="fast"]{border-color:#ff8c517d;box-shadow:0 5px 18px #0008,0 0 20px #f56b3230,inset 0 1px #fff1bf26}
+.hud .speed[data-speed="fast"] b{color:#ff9b60;text-shadow:0 0 18px #ff704c99}
+.hud .damage,.hud .turbo{width:112px;min-width:98px}
+.hud .timer{min-width:124px}
+.hud .timer strong{font-size:21px}
+.meter{height:8px;border-color:#8ba69a77;background:#03090bd9}
+.race-banner{top:27%;padding:7px 26px 11px;color:#fff3c8;background:linear-gradient(90deg,transparent,#071315bd 18% 82%,transparent);font-style:italic;letter-spacing:5px;text-shadow:0 4px #b33e2f,0 8px 24px #000,0 0 26px #ffc66066;filter:drop-shadow(0 6px 12px #0008)}
+.race-banner[data-kind="go"]{color:#aaff81;text-shadow:0 5px #1f743c,0 9px 24px #000,0 0 30px #aaff81a8}
+.race-banner[data-kind="lap"]{color:#8df3e6;font-size:clamp(34px,6vw,66px);text-shadow:0 4px #13665d,0 8px 22px #000}
+.pickup-toast{bottom:16%;min-width:270px;text-align:center;border:1px solid #e9d38e;background:linear-gradient(100deg,#081316f2,#1a2a26f2);box-shadow:0 8px 24px #0009,0 0 18px #f3c54b25,inset 0 0 0 3px #e4bc4730;letter-spacing:1.4px}
+.surface-chip{border:1px solid #9bbcb877;border-left:4px solid var(--cyan);box-shadow:0 5px 15px #0006;letter-spacing:1.8px}
+.results-panel{border-top-color:var(--amber);background:radial-gradient(ellipse at 50% 0,#b85b2630,transparent 52%),linear-gradient(155deg,#233438f8,#091518fa);box-shadow:0 24px 80px #000c,0 0 36px #ff9b3530,inset 0 1px #ffe9ad45}
+.results-panel .panel-kicker{display:inline-block;padding:6px 12px;border:1px solid #dfb95777;background:#161c1acb;color:#ffe18a;letter-spacing:3px}
+.results-panel h2{margin:16px 0 18px;font-size:clamp(56px,8vw,76px);line-height:.9;letter-spacing:1px;color:#ffe183;text-shadow:3px 4px #aa382d,0 0 26px #ffbd5c55;transform:skew(-4deg)}
+.results-panel .result-grid{border-color:#b0914d66;background:linear-gradient(110deg,#071214,#12201e);box-shadow:inset 0 0 0 2px #d2b36916}
+@media(max-width:900px){.hud{inset:8px 8px auto;gap:4px}.hud .position{min-width:106px}.hud .position em{font-size:27px}.hud .lap{min-width:86px}.hud .speed{min-width:104px}.hud .speed b{font-size:24px}.hud .damage,.hud .turbo{width:86px;min-width:76px}.hud .timer{min-width:105px}.hud-block{padding:6px 8px;min-height:50px}.hud-block span{font-size:8px}.hud-block strong{font-size:16px}}
+@media(max-width:620px){.hud{display:grid;grid-template-columns:auto auto 1fr auto;grid-template-areas:"position lap speed timer" "damage turbo turbo turbo";align-items:stretch}.hud .position{grid-area:position}.hud .lap{grid-area:lap;margin-right:0}.hud .speed{grid-area:speed}.hud .timer{display:block;grid-area:timer;min-width:0}.hud .damage{grid-area:damage}.hud .turbo{grid-area:turbo;width:auto}.hud .damage,.hud .turbo{min-width:0}.hud .timer strong{font-size:15px}.hud .lap-progress{margin-top:5px}}
