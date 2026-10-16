@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta name="theme-color" content="#091518" />
+  <title>Terra Rally 2.0</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main id="gameShell" class="game-shell">
+    <canvas id="game" aria-label="Terra Rally arcade racing game"></canvas>
+    <header id="hud" class="hud hidden" aria-live="polite">
+      <div class="hud-block position"><span>POSITION</span><strong id="place">1 / 5</strong></div>
+      <div class="hud-block lap"><span>LAP</span><strong id="lap">1 / 6</strong></div>
+      <div class="hud-block speed"><span>SPEED</span><strong><b id="speed">000</b> KM/H</strong></div>
+      <div class="hud-block damage"><span>DAMAGE</span><div class="meter damage-meter"><i id="damageFill"></i></div></div>
+      <div class="hud-block turbo"><span>TURBO</span><div class="meter"><i id="turboFill"></i></div></div>
+      <div class="hud-block timer"><span>TIME</span><strong id="timer">0:00.00</strong></div>
+    </header>
+    <div id="raceBanner" class="race-banner"></div>
+    <div id="pickupToast" class="pickup-toast"></div>
+    <div id="surfaceChip" class="surface-chip hidden">DIRT</div>
+    <button id="soundButton" class="corner-button sound-button" aria-label="Toggle sound">SOUND ON</button>
+    <button id="fullscreenButton" class="corner-button fullscreen-button" aria-label="Toggle fullscreen">FULLSCREEN</button>
+    <section id="titleScreen" class="screen title-screen">
+      <div class="scanlines"></div>
+      <div class="title-lockup">
+        <div class="title-kicker">ORBITAL MOTORSPORT PRESENTS</div>
+        <h1><span>TERRA</span><br>RALLY</h1>
+        <div class="version">CHAMPIONSHIP 2.0</div>
+        <p>Three circuits. Six laps. One forest champion.</p>
+        <button id="startButton" class="arcade-button primary">START CHAMPIONSHIP</button>
+        <div class="controls">ARROWS / WASD DRIVE&nbsp;&nbsp;·&nbsp;&nbsp;SPACE TURBO&nbsp;&nbsp;·&nbsp;&nbsp;R RESET&nbsp;&nbsp;·&nbsp;&nbsp;H HUD&nbsp;&nbsp;·&nbsp;&nbsp;F2 PERF DEBUG</div>
+      </div>
+      <div class="attract-card">
+        <img src="assets/player-buggy-topdown.png" alt="Orange rally buggy" />
+        <div><span>SELECTED MACHINE</span><strong>VANGUARD BUGGY</strong><small>Balanced traction · agile response</small></div>
+      </div>
+    </section>
+    <section id="briefingScreen" class="screen briefing-screen hidden">
+      <div class="panel wide-panel">
+        <div class="panel-kicker">FOREST WORLD · EVENT <span id="eventNumber">01</span>/03</div>
+        <h2 id="trackName">PINE RIDGE RUN</h2>
+        <p id="trackDescription">Fast dirt bends through old-growth forest.</p>
+        <div class="track-specs">
+          <div><span>LAPS</span><strong>6</strong></div>
+          <div><span>RIVALS</span><strong>4</strong></div>
+          <div><span>SURFACES</span><strong id="surfaceList">DIRT · GRAVEL · MUD</strong></div>
+        </div>
+        <div class="briefing-actions">
+          <button id="raceButton" class="arcade-button primary">ENTER RACE</button>
+          <button id="backTitleButton" class="arcade-button secondary">TITLE</button>
+        </div>
+      </div>
+    </section>
+    <section id="resultsScreen" class="screen results-screen hidden">
+      <div class="panel results-panel">
+        <div class="panel-kicker">OFFICIAL RESULT</div>
+        <h2 id="resultPlace">1ST PLACE</h2>
+        <div class="result-grid">
+          <span>RACE TIME</span><strong id="resultTime">0:00.00</strong>
+          <span>BEST LAP</span><strong id="bestLap">0:00.00</strong>
+          <span>FINISH BONUS</span><strong id="finishBonus">$0</strong>
+          <span>PICKUPS</span><strong id="pickupCash">$0</strong>
+          <span class="total-label">TOTAL CASH</span><strong id="totalCash" class="cash-total">$0</strong>
+        </div>
+        <button id="shopButton" class="arcade-button primary">CONTINUE TO WORKSHOP</button>
+      </div>
+    </section>
+    <section id="shopScreen" class="screen shop-screen hidden">
+      <div class="panel shop-panel">
+        <div class="shop-heading"><div><div class="panel-kicker">VANGUARD WORKSHOP</div><h2>RACE UPGRADES</h2></div><div class="wallet">CREDITS <strong id="wallet">$0</strong></div></div>
+        <div id="upgradeGrid" class="upgrade-grid"></div>
+        <div class="shop-footer"><span>Upgrades carry through the championship.</span><button id="nextRaceButton" class="arcade-button primary">NEXT EVENT</button></div>
+      </div>
+    </section>
+    <section id="championScreen" class="screen champion-screen hidden">
+      <div class="panel champion-panel">
+        <div class="champion-emblem">★</div>
+        <div class="panel-kicker">FOREST WORLD COMPLETE</div>
+        <h2>CHAMPIONSHIP FINISHED</h2>
+        <p id="championshipSummary">Three races carved into the record books.</p>
+        <button id="replayButton" class="arcade-button primary">RACE AGAIN</button>
+      </div>
+    </section>
+  </main>
+  <script src="physics-core.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
