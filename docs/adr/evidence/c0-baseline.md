@@ -1,8 +1,8 @@
 # C0 baseline evidence — QUARRY SWITCHBACK
 
 - **Captured:** 2026-10-16 (Europe/London)
-- **Source/baseline commit:** `35c989d7b206ce96f2c4bb5201259ad62ab5c60c` (`baseline: import existing Terra Rally project`)
-- **Build:** source at the baseline commit; no gameplay files changed during C0.
+- **Source/baseline commit:** `a1a6345d42f89d5e405cb259f7baf857d29abe78` (`baseline: import existing Terra Rally project`; rebased onto the remote MIT license commit before publication)
+- **Build:** source at the baseline commit; no gameplay files changed during C0. The local commits were rebased onto the remote's pre-existing `LICENSE` commit before publication; author email uses the account's GitHub noreply address.
 - **Target:** Championship Track #2, source name `QUARRY SWITCHBACK`.
 
 ## Conditions and available measurements

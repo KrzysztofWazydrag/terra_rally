@@ -100,8 +100,8 @@ Capture a reproducible before-state for the existing Track #2 (currently named `
 **C0 evidence record (2026-10-16):**
 
 - **Status:** BLOCKED; live-race evidence and baseline screenshots remain outstanding. Not technically complete and not owner verified.
-- **Source/baseline commit:** `35c989d7b206ce96f2c4bb5201259ad62ab5c60c` (`baseline: import existing Terra Rally project`).
-- **Resulting evidence commit:** `340f0e5` (`docs: capture available C0 baseline evidence`).
+- **Source/baseline commit:** `a1a6345d42f89d5e405cb259f7baf857d29abe78` (`baseline: import existing Terra Rally project`; rebased onto the remote MIT license commit before publication).
+- **Resulting evidence commit:** `c94038bc0faba57c1b43c82cd538d12b45286be0` (`docs: capture available C0 baseline evidence`).
 - **Measurements/results:** controlled 60 Hz physics simulation reports 162.9 / 274.7 / 326.0 game units/s at 1 / 2 / 3 seconds, with configured cap 326; road width 320 / buggy draw width 62 = 5.16; handling check passes. The test's 19.4-second skilled lap and 112.0-second six-lap result use a synthetic test route and are not accepted as game-track or production-AI baseline results. FPS, actual player/AI times, live acceleration, and screenshots are unavailable.
 - **Evidence paths:** [`evidence/c0-baseline.md`](evidence/c0-baseline.md); [`evidence/c0-handling-check.txt`](evidence/c0-handling-check.txt).
 - **Implementation notes:** no gameplay files or track behavior changed. Git was initialized at the user's request; the original project was committed as the source baseline before C0 evidence capture.
