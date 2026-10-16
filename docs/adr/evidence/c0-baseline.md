@@ -3,7 +3,7 @@
 - **Captured:** 2026-10-16 (Europe/London)
 - **Status:** **TECHNICALLY COMPLETE — OWNER VERIFICATION REQUIRED**
 - **Source/baseline commit:** `a6628f31628f3ad339f4d524e6d2b549d9208653`
-- **Resulting evidence commit:** recorded in the ADR after the evidence commit is created.
+- **Resulting evidence commit:** `506108b` (`docs: complete C0 Track 2 baseline evidence`).
 - **Build:** production source at the baseline commit; no repository gameplay files were edited.
 - **Target:** Championship Track #2, `QUARRY SWITCHBACK` (programme reference name: CANYON).
 
