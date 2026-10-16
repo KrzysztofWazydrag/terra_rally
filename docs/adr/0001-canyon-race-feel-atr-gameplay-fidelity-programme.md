@@ -1,6 +1,6 @@
 # ADR — Canyon Race Feel & ATR Gameplay Fidelity Programme
 
-- **Status:** Accepted as the authoritative implementation plan; C0 is TECHNICALLY COMPLETE pending owner verification
+- **Status:** Accepted as the authoritative implementation plan; C0 is OWNER VERIFIED and C1 is TECHNICALLY COMPLETE pending owner verification
 - **Date:** 2026-10-16
 - **Decision owners:** Game owner and implementation agent
 - **Scope:** Championship Track #2 only, working name **CANYON**
@@ -13,7 +13,7 @@
 | Phase | Description | Status | Evidence | Owner approved |
 |---|---|---|---|---|
 | C0 | Baseline / evidence | OWNER VERIFIED | [C0 baseline evidence](evidence/c0-baseline.md), [runtime screenshots](evidence/c0-runtime/), and [supplementary handling-check output](evidence/c0-handling-check.txt). | Yes |
-| C1 | Vehicle pace | NOT STARTED | Not captured | No |
+| C1 | Vehicle pace | TECHNICALLY COMPLETE — OWNER VERIFICATION REQUIRED | [C1 vehicle pace evidence](evidence/c1-vehicle-pace.md) | No |
 | C2 | Handling / grip limit | NOT STARTED | Not captured | No |
 | C3 | Vehicle animation pipeline | NOT STARTED | Not captured | No |
 | C4 | Hop / suspension | NOT STARTED | Not captured | No |
@@ -113,7 +113,7 @@ Capture a reproducible before-state for the existing Track #2 (currently named `
 
 ### Phase C1 — Vehicle pace
 
-**Status: NOT STARTED**
+**Status: TECHNICALLY COMPLETE — OWNER VERIFICATION REQUIRED**
 
 **Scope:** acceleration curve, top-speed buildup, engine speed feedback, and off-road penalty tuning. Track design is out of scope.
 
@@ -124,6 +124,14 @@ Capture a reproducible before-state for the existing Track #2 (currently named `
 - [ ] Compare results to C0 measurements.
 
 **Acceptance evidence:** repeatable acceleration timing, surface behavior notes, audio comparison, and owner-observable gameplay capture. Stop for owner verification.
+
+**C1 evidence record (2026-10-16):**
+
+- **Status:** TECHNICALLY COMPLETE — OWNER VERIFICATION REQUIRED.
+- **Source/baseline commit:** `b113eaeff56b2dea26e48dba27650afba75a84eb` (C0 owner-verification record).
+- **Result/evidence:** see [`C1 vehicle pace evidence`](evidence/c1-vehicle-pace.md); implementation and verification are in the resulting C1 commit.
+- **Implementation:** reduced default buggy acceleration from 205 to 120; eased grass resistance from 125 to 70 so the reduced engine force does not turn grass into a near-terminal loss of momentum; made engine pitch and level respond to speed and player throttle, retaining slip load and airborne pitch effects. Mud values remain unchanged and substantially more punitive than grass.
+- **Limitations:** controlled browser driving did not hold the racing line long enough for a reliable live acceleration measurement. The HUD samples from that operator run are recorded as inconclusive; they do not replace the repeatable physics-core measurement. The browser capture cannot evaluate audio loudness or subjective race feel, which need owner listening.
 
 ### Phase C2 — Handling / grip limit
 
@@ -278,4 +286,4 @@ Do not silently change a decision when implementation evidence shows it may be w
 
 ## Current session boundary
 
-This ADR records decisions and the C0–C10 checklist. C0 is **OWNER VERIFIED** based on the owner's explicit approval of its evidence and screenshots. The competent-human lap value and subjective audio assessment were not supplied and remain unreported. No gameplay code was changed during C0. C1 is the next phase.
+This ADR records decisions and the C0–C10 checklist. C0 is **OWNER VERIFIED** based on the owner's explicit approval of its evidence and screenshots. The competent-human lap value and subjective audio assessment were not supplied and remain unreported. C1 is **TECHNICALLY COMPLETE — OWNER VERIFICATION REQUIRED**; its engine loudness/feel and pace should be reviewed in a live race before C2.

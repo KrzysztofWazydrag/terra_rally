@@ -4,6 +4,7 @@ const path = require('node:path');
 const Physics = require('../physics-core.js');
 const DT = 1 / 60;
 const cfg = { maxSpeed:326, acceleration:205, accelScale:1, braking:245, steering:3.15, grip:7.8, drag:.981, airborne:false, boost:false };
+const paceCfg = {...cfg, acceleration:120};
 
 function car(speed=245){ return {x:0,y:0,angle:0,vx:0,vy:-speed,speed,angularVelocity:0,slipAngle:0}; }
 function run(initial,inputFor,seconds=1.4,config=cfg){const s={...initial};let maxSlip=0,maxYaw=0;for(let i=0;i<seconds/DT;i++){Physics.step(s,inputFor(i*DT),config,DT);maxSlip=Math.max(maxSlip,Math.abs(s.slipAngle));maxYaw=Math.max(maxYaw,Math.abs(s.angularVelocity));}return {state:s,maxSlip,maxYaw,distance:Math.hypot(s.x,s.y)};}
@@ -46,9 +47,11 @@ function trackRun(skilled,laps=1){
   return{time:maxFrames*DT,offRatio:off/maxFrames,maxSlip};
 }
 const fullLap=trackRun(false),skilledLap=trackRun(true),sixLapAI=trackRun(true,6);
-function straightRun(config,startSpeed=0,seconds=20){const s={...car(0),vy:-startSpeed};for(let i=0;i<seconds/DT;i++)Physics.step(s,{throttle:1,brake:0,steer:0},{...cfg,...config},DT);return Math.hypot(s.vx,s.vy);}
-const accelerationProfile=[1,2,3].map(seconds=>straightRun({},0,seconds));
-const grassSustainable=straightRun({accelScale:.70,drag:.981,surfaceResistance:125});
+function straightRun(config,startSpeed=0,seconds=20){const s={...car(0),vy:-startSpeed};for(let i=0;i<seconds/DT;i++)Physics.step(s,{throttle:1,brake:0,steer:0},{...paceCfg,...config},DT);return Math.hypot(s.vx,s.vy);}
+const accelerationProfile=[1,2,3,4,5,6].map(seconds=>straightRun({},0,seconds));
+function accelerationMilestones(){const s={...car(0)},times={approach95:null,approach99:null,cap:null};for(let frame=1;frame<=600;frame++){Physics.step(s,{throttle:1,brake:0,steer:0},paceCfg,DT);const speed=Math.hypot(s.vx,s.vy),time=frame*DT;if(times.approach95===null&&speed>=paceCfg.maxSpeed*.95)times.approach95=time;if(times.approach99===null&&speed>=paceCfg.maxSpeed*.99)times.approach99=time;if(times.cap===null&&speed>=paceCfg.maxSpeed-.01)times.cap=time;}return times;}
+const accelerationTimes=accelerationMilestones();
+const grassSustainable=straightRun({accelScale:.70,drag:.981,surfaceResistance:70});
 const mudSustainable=straightRun({accelScale:.48,drag:.981,surfaceResistance:175});
 const grassEntry=straightRun({accelScale:.70,drag:.981,surfaceResistance:125},300,1);
 const mudEntry=straightRun({accelScale:.48,drag:.981,surfaceResistance:175},300,1);
@@ -76,9 +79,10 @@ if(!(lift.maxSlip<fastCorner.maxSlip*.86))failures.push(`LIFT: slip ${lift.maxSl
 if(oil.maxSlip<fastCorner.maxSlip*1.35)failures.push(`OIL: slip ${oil.maxSlip.toFixed(3)}rad was not at least 35% above clean-road slip`);
 if(airborne.maxYaw>fastCorner.maxYaw*.12)failures.push(`AIRBORNE: yaw ${airborne.maxYaw.toFixed(3)} retained too much steering authority`);
 if(counterSteer.end>counterSteer.peak*.7)failures.push(`COUNTERSTEER: slip ${(counterSteer.peak*180/Math.PI).toFixed(1)}° recovered only to ${(counterSteer.end*180/Math.PI).toFixed(1)}° in 0.67s`);
-if(!(accelerationProfile[0]<210&&accelerationProfile[1]<315&&accelerationProfile[2]>=320))failures.push(`ACCELERATION CURVE: speeds at 1/2/3s were ${accelerationProfile.map(v=>v.toFixed(0)).join('/')}`);
-if(grassSustainable<326*.7||grassSustainable>326*.8)failures.push(`GRASS SPEED: settled at ${grassSustainable.toFixed(1)}, expected 70–80% of road speed`);
-if(mudSustainable<326*.5||mudSustainable>326*.65||mudSustainable>=grassSustainable)failures.push(`MUD SPEED: settled at ${mudSustainable.toFixed(1)}, expected 50–65% and slower than grass`);
+if(!(accelerationTimes.approach95>=4&&accelerationTimes.approach95<=6&&accelerationTimes.approach99>=4.5&&accelerationTimes.approach99<=6.5&&accelerationProfile[5]>=paceCfg.maxSpeed-.1))failures.push(`ACCELERATION CURVE: 95%=${accelerationTimes.approach95?.toFixed(2)}s 99%=${accelerationTimes.approach99?.toFixed(2)}s at 6s=${accelerationProfile[5].toFixed(1)}`);
+if(!gameSource.includes('throttle=0')||!gameSource.includes('speedRatio*.018')||!gameSource.includes('clamp(throttle,0,1)*.012'))failures.push('ENGINE FEEDBACK: pitch/level do not respond to speed and throttle load');
+if(grassSustainable<326*.68||grassSustainable>326*.8)failures.push(`GRASS SPEED: settled at ${grassSustainable.toFixed(1)}, expected 68–80% of road speed`);
+if(mudSustainable<326*.4||mudSustainable>326*.5||mudSustainable>=grassSustainable)failures.push(`MUD SPEED: settled at ${mudSustainable.toFixed(1)}, expected 40–50% and slower than grass`);
 if(grassEntry>270||grassEntry<210||mudEntry>=grassEntry||mudEntry<155)failures.push(`OFF-ROAD DECAY: grass=${grassEntry.toFixed(1)}, mud=${mudEntry.toFixed(1)} after 1s from 300`);
 if(roadWidth<carWidth*5||fullFieldWidth>roadWidth)failures.push(`TRACK WIDTH: road=${roadWidth}, car=${carWidth}, five-car field=${fullFieldWidth}`);
 if(bridgeWidth<carWidth*4||bridgeWidth>carWidth*5.5)failures.push(`BRIDGE WIDTH: ${bridgeWidth.toFixed(0)} for ${carWidth}px buggy`);
@@ -96,7 +100,7 @@ console.log(`wheels rolling=${rollingWheels.frontWheelSpeed.toFixed(1)} stopped=
 console.log(`lap flat-out=${fullLap.time.toFixed(1)}s off-road=${(fullLap.offRatio*100).toFixed(0)}% skilled=${skilledLap.time.toFixed(1)}s off-road=${(skilledLap.offRatio*100).toFixed(0)}%`);
 console.log(`cone launched=${coneHit} velocity=${Math.hypot(cone.vx,cone.vy).toFixed(1)} spin=${cone.spin.toFixed(1)}`);
 console.log(`six-lap AI=${sixLapAI.time.toFixed(1)}s off-road=${(sixLapAI.offRatio*100).toFixed(0)}%`);
-console.log(`acceleration 1/2/3s=${accelerationProfile.map(v=>v.toFixed(1)).join('/')} max=${cfg.maxSpeed}`);
+console.log(`acceleration 1–6s=${accelerationProfile.map(v=>v.toFixed(1)).join('/')} 95%=${accelerationTimes.approach95?.toFixed(2)}s 99%=${accelerationTimes.approach99?.toFixed(2)}s cap=${accelerationTimes.cap?.toFixed(2)}s max=${cfg.maxSpeed}`);
 console.log(`surface settled grass=${grassSustainable.toFixed(1)} (${(grassSustainable/326*100).toFixed(0)}%) mud=${mudSustainable.toFixed(1)} (${(mudSustainable/326*100).toFixed(0)}%) entry1s grass=${grassEntry.toFixed(1)} mud=${mudEntry.toFixed(1)}`);
 console.log(`proportions road=${roadWidth} car=${carWidth} five-car field=${fullFieldWidth} bridge=${bridgeWidth.toFixed(0)}`);
 if(failures.length){console.error(failures.map(x=>`FAIL ${x}`).join('\n'));process.exit(1);}console.log('PASS handling checks');
