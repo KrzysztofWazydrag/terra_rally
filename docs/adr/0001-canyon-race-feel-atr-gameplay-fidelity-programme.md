@@ -12,7 +12,7 @@
 
 | Phase | Description | Status | Evidence | Owner approved |
 |---|---|---|---|---|
-| C0 | Baseline / evidence | BLOCKED | Partial; [`C0 baseline evidence`](evidence/c0-baseline.md) and [handling-check output](evidence/c0-handling-check.txt). Required live-race evidence is unavailable. | No |
+| C0 | Baseline / evidence | BLOCKED | Partial live HTTP observations plus source/synthetic evidence; [`C0 baseline evidence`](evidence/c0-baseline.md) and [handling-check output](evidence/c0-handling-check.txt). Required Track #2 evidence remains outstanding. | No |
 | C1 | Vehicle pace | NOT STARTED | Not captured | No |
 | C2 | Handling / grip limit | NOT STARTED | Not captured | No |
 | C3 | Vehicle animation pipeline | NOT STARTED | Not captured | No |
@@ -86,26 +86,27 @@ Checkboxes are phase work items, not proof of completion. Each phase remains `NO
 
 Capture a reproducible before-state for the existing Track #2 (currently named `QUARRY SWITCHBACK` in code), which is the programme's future CANYON reference.
 
-- [ ] Record competent-player lap time and test conditions. *(Unavailable: live game runtime could not be observed; see evidence.)*
-- [x] Measure 0-to-top-speed time and current maximum speed. *(Controlled physics-core result only; live result unavailable.)*
+- [ ] Record competent-player lap time and test conditions. *(Track #2 is gated behind the six-lap Track #1 event; no target lap was recorded.)*
+- [ ] Measure live 0-to-top-speed time and current maximum usable speed. *(The controlled physics-core result is supplementary; live Track #1 speed samples did not establish acceleration time or maximum usable speed.)*
 - [x] Measure road width relative to the rendered vehicle width. *(Source dimensions: 320 / 62 = 5.16.)*
-- [ ] Record FPS and frame-time conditions, including viewport/resolution. *(Unavailable: no live runtime measurement.)*
-- [ ] Record AI lap times and race conditions. *(Unavailable: production AI could not be observed; synthetic test loop is explicitly not a substitute.)*
-- [x] Describe current engine-audio behavior across acceleration and sustained speed. *(Source inspection only; audible behavior unavailable.)*
-- [ ] Capture screenshots of vehicle/wheel rendering and the track/HUD during a normal race. *(Unavailable: game page observation denied by browser security policy.)*
+- [ ] Record FPS and frame-time conditions, including viewport/resolution. *(Short F2 snapshots at 1920×1080 were 144 FPS / 7.0 ms; no sustained stability observation.)*
+- [ ] Record AI lap times and race conditions. *(Production AI was seen in a live Track #1 race; no lap timing was captured. Synthetic test loop is explicitly not a substitute.)*
+- [ ] Describe actual audible engine behavior across acceleration and sustained speed. *(SOUND ON in live game, but output was inaccessible for listening/capture; source inspection is supplementary.)*
+- [ ] Capture durable screenshots of vehicle/wheel rendering and the track/HUD during a normal race. *(Frames were inspected live but the browser tool did not expose a supported local save path; no durable screenshots.)*
 - [x] Store available evidence and identify the tested build/commit or source state. *(Source commit and evidence paths recorded below.)*
 
 **Acceptance evidence:** all listed measurements or a clear note explaining unavailable measurements; baseline screenshots; reproducible test conditions. Do not change gameplay during C0.
 
-**C0 evidence record (2026-10-16):**
+**C0 evidence record (2026-10-16; updated after localhost trial):**
 
-- **Status:** BLOCKED; live-race evidence and baseline screenshots remain outstanding. Not technically complete and not owner verified.
-- **Source/baseline commit:** `a1a6345d42f89d5e405cb259f7baf857d29abe78` (`baseline: import existing Terra Rally project`; rebased onto the remote MIT license commit before publication).
-- **Resulting evidence commit:** `c94038bc0faba57c1b43c82cd538d12b45286be0` (`docs: capture available C0 baseline evidence`).
-- **Measurements/results:** controlled 60 Hz physics simulation reports 162.9 / 274.7 / 326.0 game units/s at 1 / 2 / 3 seconds, with configured cap 326; road width 320 / buggy draw width 62 = 5.16; handling check passes. The test's 19.4-second skilled lap and 112.0-second six-lap result use a synthetic test route and are not accepted as game-track or production-AI baseline results. FPS, actual player/AI times, live acceleration, and screenshots are unavailable.
-- **Evidence paths:** [`evidence/c0-baseline.md`](evidence/c0-baseline.md); [`evidence/c0-handling-check.txt`](evidence/c0-handling-check.txt).
-- **Implementation notes:** no gameplay files or track behavior changed. Git was initialized at the user's request; the original project was committed as the source baseline before C0 evidence capture.
-- **Known limitations / blocker:** the existing game page used a `file://` URL. Browser policy denied observation and prohibited alternate surfaces/workarounds; a local static server could not be started in the restricted environment. Resume C0 with an allowed runtime, capture missing live evidence and screenshots, then stop for owner verification.
+- **Status:** BLOCKED; no Track #2 live lap results, controlled live acceleration result, sustained performance record, audible engine assessment, or durable screenshots. Not technically complete and not owner verified.
+- **Source/baseline commit for this live run:** `93b9c1ec2997b93d57201dae15c2f00bd3e4bb29` (`docs: refresh C0 provenance after GitHub rebase`); tree clean before measurement.
+- **Resulting live-evidence report commit:** `9f0b912614ff21a864550ad55fa6df7c40ed880a` (`docs: record partial live C0 observations`).
+- **Measurements/results:** served the existing project using Python's standard-library HTTP server at `http://127.0.0.1:8765/`; observed 1920×1080 CSS viewport at DPR 1. A real five-car race (player plus four production AI) was observed on Track #1, PINE RIDGE RUN. The interface offers no Track #2 selector, and Track #2 is gated behind all six Track #1 laps; the observed race did not complete a lap. Track #1 HUD samples included 249 km/h at displayed 0:01.93 and a later 254 km/h, but these uncontrolled samples do not establish 0-to-maximum timing or maximum usable speed. Short F2 snapshots were 144 FPS / 7.0 ms, with update 0.1–0.2 ms and render 0.4–0.7 ms; this is not a sustained stability measurement. Synthetic 60 Hz physics/route results remain supplementary and do not replace live Track #2 or production-AI timing.
+- **Audio/screenshots:** SOUND ON was shown, but the browser interface offered neither audio listening/capture nor a supported way to persist its in-memory screenshots to the evidence directory. No durable screenshots were produced. The report records these limitations.
+- **Evidence paths:** [`evidence/c0-baseline.md`](evidence/c0-baseline.md) (live method, partial observations, blockers); [`evidence/c0-handling-check.txt`](evidence/c0-handling-check.txt) (supplementary synthetic check).
+- **Implementation notes:** localhost serving resolved the former `file://` access blocker. No game, gameplay, physics, AI, audio, rendering, or track files were changed. The live trial did not bypass championship progression or alter game state outside ordinary UI play.
+- **Known limitations / blocker:** required evidence remains incomplete because normal UI progression gates Track #2 and the available browser tooling cannot save durable screenshots or capture/listen to game audio. C0 remains BLOCKED. Obtain an allowed way to complete the six-lap progression and persist/capture the missing evidence, then stop for owner verification.
 
 ### Phase C1 — Vehicle pace
 
@@ -274,4 +275,4 @@ Do not silently change a decision when implementation evidence shows it may be w
 
 ## Current session boundary
 
-This ADR records decisions and the C0–C10 checklist. C0 has partial source/physics evidence and is **BLOCKED** on live-race measurements and screenshots; no gameplay code was changed. Resume C0 and obtain owner verification before beginning C1.
+This ADR records decisions and the C0–C10 checklist. C0 has partial source/physics and live HTTP evidence and remains **BLOCKED** on Track #2 live-race measurements, durable screenshots, and audible engine assessment; no gameplay code was changed. Resume C0 and obtain owner verification before beginning C1.
