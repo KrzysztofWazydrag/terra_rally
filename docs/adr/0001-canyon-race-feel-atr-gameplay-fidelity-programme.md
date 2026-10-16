@@ -17,7 +17,7 @@
 | C2 | Handling / grip limit | TECHNICALLY COMPLETE | [C2 handling evidence](evidence/c2-handling.md) | No |
 | C3 | Vehicle animation pipeline | TECHNICALLY COMPLETE | [C3 vehicle pipeline evidence](evidence/c3-vehicle-animation.md), [race-scale screenshot](evidence/c3-runtime/c3-track1-race-vehicle.png) | No |
 | C4 | Hop / suspension | TECHNICALLY COMPLETE | [C4 hop evidence](evidence/c4-hop.md), [handling-check output](evidence/c4-handling-check.txt) | No |
-| C5 | Canyon track rebuild | NOT STARTED | Not captured | No |
+| C5 | Canyon track rebuild | TECHNICALLY COMPLETE | [C5 Canyon evidence](evidence/c5-canyon.md), [runtime screenshots](evidence/c5-runtime/) | Yes |
 | C6 | Pickup system | NOT STARTED | Not captured | No |
 | C7 | AI competition | NOT STARTED | Not captured | No |
 | C8 | Race presentation | NOT STARTED | Not captured | No |
@@ -208,7 +208,7 @@ Capture a reproducible before-state for the existing Track #2 (currently named `
 
 ### Phase C5 — Canyon track rebuild
 
-**Status: NOT STARTED**
+**Status: TECHNICALLY COMPLETE — OWNER VISUAL VERIFICATION REQUIRED**
 
 **Scope:** rebuild Championship Track #2 only into the CANYON reference. Target approximately a 50-second competent lap, wider raceable surface, a clear sequence of racing situations, kerbs, hazards, bridge/water, hop, varied widths, and a coherent race scenery kit. Do not redesign Tracks 1 or 3.
 
@@ -221,6 +221,15 @@ Capture a reproducible before-state for the existing Track #2 (currently named `
 - [ ] Tune the route toward a 45–55 second competent lap, aiming near 50 seconds.
 
 **Acceptance evidence:** full-course screenshots/capture; route and width review; measured lap time; notes showing hazards and racing situations; owner verifies this is the sole rebuilt championship track.
+
+- **Source/baseline commit:** `0c29e1fcb65b6488554d680388839cab074304cd` (C4 provenance record).
+- **Resulting implementation commit:** `f399ea10515e261bf6f47b9a8323d38157b31347` (`feat: rebuild championship track two as canyon`).
+- **Evidence:** [C5 Canyon evidence report](evidence/c5-canyon.md), [start-grid runtime screenshot](evidence/c5-runtime/c5-start-grid.png), [bridge and hazards runtime screenshot](evidence/c5-runtime/c5-bridge-hazards.png), [route-check output](evidence/c5-runtime/c5-course-check.txt), and [supplementary handling-check output](evidence/c5-runtime/c5-handling-check.txt).
+- **Implementation:** rebuilt Track #2 as CANYON CIRCUIT with a 7,996-unit route, fast mesa section, sweep, braking sequence, hairpin, S bend, gravel/dirt shortcut, three oil locations, six cones, two hops, bridge/water crossing, tunnel passage and repeated modular scenery. Added original reusable asphalt, dirt and gravel textures, red/white kerbs, race barriers, canyon walls/rocks, palms, signs, marshal hut, barrels and gantry. Tracks #1 and #3 remain unchanged. No vehicle physics, AI tuning, audio, or performance-system changes were made.
+- **Measurements:** 320-unit default road is 5.16 buggy widths (car width 62); the visible tunnel wall gap is 272 units (4.4 buggy widths) and remains passable. A deterministic route-following controller using the shared production physics core completed in 47.4 seconds with 0.0% off-road time and 20.9° peak slip. This is a synthetic route/tuning measurement, not a human or production-AI lap time. Production AI was present in the live five-car race captures, but individual AI lap timing was not exposed or measured in this phase.
+- **Live evidence conditions:** game loaded over localhost from a disposable copy of the current runtime. To bypass the Track #1 championship unlock, only the temporary copy's `newChampionship()` initial `trackIndex` was changed from `0` to `1`; the committed `game.js`, Track #2 definition, and gameplay systems were not changed by the bypass. The screenshot captures show Track #2 in the actual game renderer with the normal race HUD and opponents. The temporary harness was outside the repository and removed after capture.
+- **Hazards:** route checks confirm three oil placements and production AI oil-avoidance/shared oil-physics wiring. Six Canyon cones use the existing physical-cone update system; the supplementary shared handling check reports a displaced cone. No new Canyon-specific oil/cone physics or AI behavior was introduced.
+- **Known limitations / owner gate:** please review whether the course reads immediately as a race circuit at speed, whether the kerbs/barriers/hazards are clear, and whether the repeated Canyon kit feels coherent. The tunnel gap is a visual wall-to-wall pinch; the main road physics width remains constant. The 47.4-second lap is synthetic; record a production AI or competent human lap in normal iteration if useful. No live FPS study was part of C5. Owner visual verification is required before the next phase.
 
 ### Phase C6 — Pickup system
 
