@@ -1,8 +1,8 @@
 # C5 — Canyon track rebuild evidence
 
-**Status:** TECHNICALLY COMPLETE — owner visual verification required  
-**Baseline:** `0c29e1fcb65b6488554d680388839cab074304cd`  
-**Implementation commit:** `f399ea10515e261bf6f47b9a8323d38157b31347` (`feat: rebuild championship track two as canyon`)  
+**Status:** OWNER VERIFIED
+**Baseline:** `0c29e1fcb65b6488554d680388839cab074304cd`
+**Implementation commit:** `f399ea10515e261bf6f47b9a8323d38157b31347` (`feat: rebuild championship track two as canyon`)
 **Scope:** Track #2 and its Canyon-specific presentation only
 
 ## Implementation
@@ -43,10 +43,8 @@ The screenshots were taken from the temporary direct-start copy at 2560×1440 de
 
 ## Owner review and limitations
 
-The owner should verify that this is the sole rebuilt championship track and review these visual/gameplay questions by playing it:
+## Owner verification
 
-1. Does the road, kerb, barrier, corner, and hazard read as a race circuit at speed?
-2. Does the repeated Canyon scenery kit feel coherent, and is the bridge/tunnel presentation clear?
-3. Is the standard width and narrow tunnel passage comfortable to drive?
+On 2026-10-16, the owner reported playing CANYON CIRCUIT and approved C5. The owner confirmed that the track reads clearly as a race circuit at speed; the Canyon scenery and repeated modular assets feel coherent; road width is comfortable enough for racing; and the tunnel/narrow section is acceptable. C5 is OWNER VERIFIED.
 
-The 47.4-second result is not a competent-human lap. A production AI lap-time result was not captured. The tunnel is a visual wall-to-wall pinch; road physics width is constant. These limits do not block technical completion, but the owner’s visual verification gate remains open.
+The 47.4-second result is not a competent-human lap. A production AI lap-time result was not captured. The tunnel is a visual wall-to-wall pinch; road physics width is constant. These limitations remain recorded for later iteration and do not change the owner approval.

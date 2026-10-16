@@ -17,7 +17,7 @@
 | C2 | Handling / grip limit | TECHNICALLY COMPLETE | [C2 handling evidence](evidence/c2-handling.md) | No |
 | C3 | Vehicle animation pipeline | TECHNICALLY COMPLETE | [C3 vehicle pipeline evidence](evidence/c3-vehicle-animation.md), [race-scale screenshot](evidence/c3-runtime/c3-track1-race-vehicle.png) | No |
 | C4 | Hop / suspension | TECHNICALLY COMPLETE | [C4 hop evidence](evidence/c4-hop.md), [handling-check output](evidence/c4-handling-check.txt) | No |
-| C5 | Canyon track rebuild | TECHNICALLY COMPLETE | [C5 Canyon evidence](evidence/c5-canyon.md), [runtime screenshots](evidence/c5-runtime/) | Yes |
+| C5 | Canyon track rebuild | OWNER VERIFIED | [C5 Canyon evidence](evidence/c5-canyon.md), [runtime screenshots](evidence/c5-runtime/) | Yes |
 | C6 | Pickup system | NOT STARTED | Not captured | No |
 | C7 | AI competition | NOT STARTED | Not captured | No |
 | C8 | Race presentation | NOT STARTED | Not captured | No |
@@ -208,7 +208,7 @@ Capture a reproducible before-state for the existing Track #2 (currently named `
 
 ### Phase C5 — Canyon track rebuild
 
-**Status: TECHNICALLY COMPLETE — OWNER VISUAL VERIFICATION REQUIRED**
+**Status: OWNER VERIFIED**
 
 **Scope:** rebuild Championship Track #2 only into the CANYON reference. Target approximately a 50-second competent lap, wider raceable surface, a clear sequence of racing situations, kerbs, hazards, bridge/water, hop, varied widths, and a coherent race scenery kit. Do not redesign Tracks 1 or 3.
 
@@ -230,6 +230,7 @@ Capture a reproducible before-state for the existing Track #2 (currently named `
 - **Live evidence conditions:** game loaded over localhost from a disposable copy of the current runtime. To bypass the Track #1 championship unlock, only the temporary copy's `newChampionship()` initial `trackIndex` was changed from `0` to `1`; the committed `game.js`, Track #2 definition, and gameplay systems were not changed by the bypass. The screenshot captures show Track #2 in the actual game renderer with the normal race HUD and opponents. The temporary harness was outside the repository and removed after capture.
 - **Hazards:** route checks confirm three oil placements and production AI oil-avoidance/shared oil-physics wiring. Six Canyon cones use the existing physical-cone update system; the supplementary shared handling check reports a displaced cone. No new Canyon-specific oil/cone physics or AI behavior was introduced.
 - **Known limitations / owner gate:** please review whether the course reads immediately as a race circuit at speed, whether the kerbs/barriers/hazards are clear, and whether the repeated Canyon kit feels coherent. The tunnel gap is a visual wall-to-wall pinch; the main road physics width remains constant. The 47.4-second lap is synthetic; record a production AI or competent human lap in normal iteration if useful. No live FPS study was part of C5. Owner visual verification is required before the next phase.
+- **Owner verification (2026-10-16):** owner played CANYON CIRCUIT and approved the phase. Confirmed it reads clearly as a race circuit at speed; Canyon scenery and repeated modular assets feel coherent; road width is comfortable enough for racing; and the tunnel/narrow section is acceptable. C5 is OWNER VERIFIED.
 
 ### Phase C6 — Pickup system
 
@@ -325,4 +326,4 @@ Do not silently change a decision when implementation evidence shows it may be w
 
 ## Current session boundary
 
-This ADR records decisions and the C0–C10 checklist. C0 is **OWNER VERIFIED**; the owner accepted its technical evidence as sufficient and waived human lap timing and subjective audio feel as gates, to be evaluated later during normal iteration. C1–C4 are technically complete. C5 is next; proceed unless owner feedback is genuinely needed under the iterative-workflow direction.
+This ADR records decisions and the C0–C10 checklist. C0 and C5 are **OWNER VERIFIED**. C0's human lap timing and subjective audio feel were waived as gates and may be evaluated later during normal iteration. C1–C4 are technically complete. C6 pickup-system work is next.
