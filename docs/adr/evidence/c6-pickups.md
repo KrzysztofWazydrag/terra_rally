@@ -1,8 +1,8 @@
 # C6 — Shared pickup system evidence
 
-**Status:** TECHNICALLY COMPLETE — OWNER VERIFICATION REQUIRED  
-**Baseline/source commit:** `e5a5ed488f878d6b0df99e7dd4b7cac33eb7040f` (C5 owner verification)  
-**Implementation/result commit:** `1c8afa6246fc095f1ae1deaabcaf872b38ccb414` (`feat: add shared competitive pickup system`)  
+**Status:** OWNER VERIFIED
+**Baseline/source commit:** `e5a5ed488f878d6b0df99e7dd4b7cac33eb7040f` (C5 owner verification)
+**Implementation/result commit:** `1c8afa6246fc095f1ae1deaabcaf872b38ccb414` (`feat: add shared competitive pickup system`)
 **Scope:** shared pickup behavior and presentation across the existing game; no track, vehicle physics, race rules, or audio mix changes.
 
 ## Changes
@@ -42,8 +42,12 @@ All passed. `pickup-system-check.js` covers player-first and AI-first results; o
 
 The browser showed the race's sound indicator enabled, and the production collection path invokes the existing `cash`, `repair`, or `pickup` effect. This browser capture does not establish subjective loudness or audio quality; C8 remains responsible for race-audio balance.
 
-## Limitations and owner review
+## Limitations
 
 The controlled AI-first capture places an AI racer at the pickup to verify the production claim path; it does not prove that autonomous AI reliably takes the pickup during an uncontrolled race. AI attraction logic is present and its ordering relative to hazard avoidance is verified in source. A naturally driven human collection was not captured. These are runtime-driver limitations, not synthetic substitutes for a lap measurement.
 
-Please review whether the pickup prism reads clearly at race speed, whether the player/rival feedback is easy to understand, and whether pickup competition and one-lap respawn feel right in play. C6 remains technically complete and awaits this product-level verification. No owner approval is inferred.
+The controlled captures do not evaluate pickup readability or competition during an ordinary player-driven race. This limitation does not alter the owner's approval.
+
+## Owner verification
+
+On 2026-10-16, the owner explicitly approved C6. C6 is OWNER VERIFIED.
