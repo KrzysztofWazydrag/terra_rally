@@ -129,7 +129,8 @@ Capture a reproducible before-state for the existing Track #2 (currently named `
 
 - **Status:** TECHNICALLY COMPLETE — OWNER VERIFICATION REQUIRED.
 - **Source/baseline commit:** `b113eaeff56b2dea26e48dba27650afba75a84eb` (C0 owner-verification record).
-- **Result/evidence:** see [`C1 vehicle pace evidence`](evidence/c1-vehicle-pace.md); implementation and verification are in the resulting C1 commit.
+- **Resulting implementation commit:** `02fc28420ce81c37e74dafd303664047a471efe2` (`feat: tune vehicle pace for C1`).
+- **Result/evidence:** see [`C1 vehicle pace evidence`](evidence/c1-vehicle-pace.md).
 - **Implementation:** reduced default buggy acceleration from 205 to 120; eased grass resistance from 125 to 70 so the reduced engine force does not turn grass into a near-terminal loss of momentum; made engine pitch and level respond to speed and player throttle, retaining slip load and airborne pitch effects. Mud values remain unchanged and substantially more punitive than grass.
 - **Limitations:** controlled browser driving did not hold the racing line long enough for a reliable live acceleration measurement. The HUD samples from that operator run are recorded as inconclusive; they do not replace the repeatable physics-core measurement. The browser capture cannot evaluate audio loudness or subjective race feel, which need owner listening.
 
