@@ -14,7 +14,7 @@
 |---|---|---|---|---|
 | C0 | Baseline / evidence | OWNER VERIFIED | [C0 baseline evidence](evidence/c0-baseline.md), [runtime screenshots](evidence/c0-runtime/), and [supplementary handling-check output](evidence/c0-handling-check.txt). | Yes |
 | C1 | Vehicle pace | TECHNICALLY COMPLETE — OWNER VERIFICATION REQUIRED | [C1 vehicle pace evidence](evidence/c1-vehicle-pace.md) | No |
-| C2 | Handling / grip limit | NOT STARTED | Not captured | No |
+| C2 | Handling / grip limit | TECHNICALLY COMPLETE | [C2 handling evidence](evidence/c2-handling.md) | No |
 | C3 | Vehicle animation pipeline | NOT STARTED | Not captured | No |
 | C4 | Hop / suspension | NOT STARTED | Not captured | No |
 | C5 | Canyon track rebuild | NOT STARTED | Not captured | No |
@@ -137,18 +137,26 @@ Capture a reproducible before-state for the existing Track #2 (currently named `
 
 ### Phase C2 — Handling / grip limit
 
-**Status: NOT STARTED**
+**Status: TECHNICALLY COMPLETE**
 
 **Scope:** planted normal handling, high-speed sharp-turn skid, tyre squeal, lift-off behavior, recovery, and countersteer.
 
-- [ ] Preserve quick steering response and direct low/medium-speed control.
-- [ ] Keep ordinary high-speed corners mostly planted.
-- [ ] Make sharp high-speed turns beyond grip visibly and audibly slide.
-- [ ] Scale tyre squeal with speed and actual slip, not steering alone.
-- [ ] Make throttle lift and countersteer settle the car in a readable, recoverable way.
-- [ ] Keep oil's large grip loss for its later track integration; confirm its handling response if the existing surface model supports it without widening this phase.
+- [x] Preserve quick steering response and direct low/medium-speed control; synthetic low-speed yaw reached 2.660 after 0.55 seconds.
+- [x] Keep ordinary high-speed corners mostly planted; clean-corner slip was 5.0° with zero generated squeal.
+- [x] Make sharp high-speed turns beyond grip visibly and audibly slide; the aggressive turn reached 11.7° slip and 0.65 squeal, with sprite posture now exaggerating slip up to 0.18 rad.
+- [x] Scale tyre squeal with speed and actual slip, not steering alone; a 0.7° mild-steer run produced zero squeal, while the S-bend peaked at 0.282 rad slip / 1.00 squeal.
+- [x] Make throttle lift and countersteer settle the car in a readable, recoverable way; countersteer reduced slip from 4.7° to 2.7° in 0.67 seconds.
+- [x] Preserve oil's large grip loss for its later track integration; the existing synthetic oil check remains approximately 3.6× the normal aggressive-corner slip, with no oil or track tuning added in C2.
 
 **Acceptance evidence:** repeatable straight, clean-corner, grip-limit, lift, and countersteer captures/notes. Owner gameplay feedback can refine the result during normal iteration.
+
+**C2 evidence record (2026-10-16):**
+
+- **Status:** TECHNICALLY COMPLETE.
+- **Source/baseline commit:** `03ef0a272e2efeac7412f4343d89518f1c8a26ef` (C0 waiver / iterative-workflow decision).
+- **Result/evidence:** see [`C2 handling evidence`](evidence/c2-handling.md); resulting implementation commit is recorded after commit.
+- **Implementation:** squeal intensity now derives only from actual slip angle and speed; steering load by itself no longer adds squeal. Increased tyre-squeal mix level and visual slip posture for readable limit behavior. Core steering, grip, oil, and off-road parameters were otherwise unchanged.
+- **Limitations:** objective corner, lift, and countersteer evidence is from the repeatable physics-core check. A live game smoke test confirmed the race starts and accepts steering/throttle input, but controlled high-speed driving did not stay on the racing line long enough to be a second calibrated handling measurement. Subjective audio loudness remains something to evaluate during normal iteration, not a phase gate.
 
 ### Phase C3 — Vehicle animation pipeline
 
@@ -288,4 +296,4 @@ Do not silently change a decision when implementation evidence shows it may be w
 
 ## Current session boundary
 
-This ADR records decisions and the C0–C10 checklist. C0 is **OWNER VERIFIED**; the owner accepted its technical evidence as sufficient and waived human lap timing and subjective audio feel as gates, to be evaluated later during normal iteration. C1 is **TECHNICALLY COMPLETE**. C2 is next; proceed without waiting for routine C1 approval under the owner's iterative-workflow direction.
+This ADR records decisions and the C0–C10 checklist. C0 is **OWNER VERIFIED**; the owner accepted its technical evidence as sufficient and waived human lap timing and subjective audio feel as gates, to be evaluated later during normal iteration. C1 and C2 are technically complete. C3 is next; proceed unless owner feedback is genuinely needed under the iterative-workflow direction.

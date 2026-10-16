@@ -60,7 +60,7 @@
     }
     draw(target,car,hue=0){
       if(!this.frames.length)return false;
-      const driftPosture=clamp(-car.slipAngle*.18,-.09,.09);
+      const driftPosture=clamp(-car.slipAngle*.4,-.18,.18);
       const visualAngle=car.angle+clamp((car.steerInput||0)*.035+car.angularVelocity*.012+driftPosture,-.13,.13);
       const index=mod(Math.round(visualAngle/TAU*this.directions),this.directions),frameAngle=index/this.directions*TAU;
       const roll=clamp((car.steerInput||0)*.045+car.angularVelocity*.055,-.12,.12),drawY=car.y-car.z-(car.suspension||0)*3;
@@ -207,7 +207,7 @@
         this.terrain=this.ctx.createOscillator();this.terrainGain=this.ctx.createGain();this.terrain.type='square';this.terrain.connect(this.terrainGain);this.terrainGain.connect(this.ctx.destination);this.terrain.start();
       }
       if(this.engine){const speedRatio=clamp(speed/326,0,1),load=.88+clamp(throttle,0,1)*.18+Math.min(.12,squeal*.08);this.engine.frequency.setTargetAtTime((72+speed*.78)*load*(airborne?.84:1),this.ctx.currentTime,.05);const level=.032+speedRatio*.018+clamp(throttle,0,1)*.012+Math.min(.012,squeal*.01);this.engineGain.gain.setTargetAtTime(racing?level:0,this.ctx.currentTime,.06);}
-      if(this.squeal){const rough=surface==='GRAVEL'||surface==='GRASS'?.72:1;this.squeal.frequency.setTargetAtTime(570+squeal*330+Math.sin(time*17)*22,this.ctx.currentTime,.035);this.squealGain.gain.setTargetAtTime(racing?squeal*.026*rough:0,this.ctx.currentTime,.045);}
+      if(this.squeal){const rough=surface==='GRAVEL'||surface==='GRASS'?.72:1;this.squeal.frequency.setTargetAtTime(570+squeal*330+Math.sin(time*17)*22,this.ctx.currentTime,.035);this.squealGain.gain.setTargetAtTime(racing?squeal*.055*rough:0,this.ctx.currentTime,.045);}
       if(this.terrain){const texture={TARMAC:[0,38],DIRT:[.52,54],GRAVEL:[.82,73],MUD:[.68,34],WATER:[.48,46],GRASS:[.76,42]}[surface]||[.5,52],motion=clamp((speed-20)/220,0,1);this.terrain.frequency.setTargetAtTime(texture[1]+Math.sin(time*19)*5,this.ctx.currentTime,.04);this.terrainGain.gain.setTargetAtTime(racing&&!airborne?texture[0]*motion*.007:0,this.ctx.currentTime,.05);}
       const step=Math.floor(time*4);if(step!==this.step){this.step=step;const seq=racing?[110,110,165,110,220,165,110,147]:[110,147,165,220,165,147,123,147];this.tone(seq[mod(step,seq.length)],.09,step%2?'triangle':'square',.012);}
     }

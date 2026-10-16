@@ -76,7 +76,9 @@
     lateral = state.vx * rx + state.vy * ry;
     state.speed = forward;
     state.steerLoad = Math.abs(input.steer) * clamp(magnitude / 180, 0, 1.2);
-    state.squeal = clamp((Math.abs(state.slipAngle)-.035)*3.8 + state.steerLoad*.22,0,1) * clamp((magnitude-55)/130,0,1);
+    const slideIntensity = clamp((Math.abs(state.slipAngle) - .10) / .16, 0, 1);
+    const speedIntensity = clamp((magnitude - 75) / 125, 0, 1);
+    state.squeal = slideIntensity * speedIntensity;
     return { forward, lateral, speedRatio, slipAngle:state.slipAngle };
   }
 

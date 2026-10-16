@@ -7,10 +7,11 @@ const cfg = { maxSpeed:326, acceleration:205, accelScale:1, braking:245, steerin
 const paceCfg = {...cfg, acceleration:120};
 
 function car(speed=245){ return {x:0,y:0,angle:0,vx:0,vy:-speed,speed,angularVelocity:0,slipAngle:0}; }
-function run(initial,inputFor,seconds=1.4,config=cfg){const s={...initial};let maxSlip=0,maxYaw=0;for(let i=0;i<seconds/DT;i++){Physics.step(s,inputFor(i*DT),config,DT);maxSlip=Math.max(maxSlip,Math.abs(s.slipAngle));maxYaw=Math.max(maxYaw,Math.abs(s.angularVelocity));}return {state:s,maxSlip,maxYaw,distance:Math.hypot(s.x,s.y)};}
+function run(initial,inputFor,seconds=1.4,config=cfg){const s={...initial};let maxSlip=0,maxYaw=0,maxSqueal=0;for(let i=0;i<seconds/DT;i++){Physics.step(s,inputFor(i*DT),config,DT);maxSlip=Math.max(maxSlip,Math.abs(s.slipAngle));maxYaw=Math.max(maxYaw,Math.abs(s.angularVelocity));maxSqueal=Math.max(maxSqueal,s.squeal);}return {state:s,maxSlip,maxYaw,maxSqueal,distance:Math.hypot(s.x,s.y)};}
 
 const fastCorner=run(car(),()=>({throttle:1,brake:0,steer:1}),1.25);
 const cleanCorner=run(car(),()=>({throttle:1,brake:0,steer:.5}),1.25);
+const mildSteer=run(car(),()=>({throttle:1,brake:0,steer:.08}),.45);
 const lowSpeedTurn=run(car(65),()=>({throttle:1,brake:0,steer:1}),.55);
 const flatOut=run(car(210),t=>({throttle:1,brake:0,steer:t<.7?1:t<1.4?-1:1}),2.1);
 const lift=run(car(),()=>({throttle:0,brake:0,steer:1}),1.25);
@@ -56,6 +57,7 @@ const mudSustainable=straightRun({accelScale:.48,drag:.981,surfaceResistance:175
 const grassEntry=straightRun({accelScale:.70,drag:.981,surfaceResistance:125},300,1);
 const mudEntry=straightRun({accelScale:.48,drag:.981,surfaceResistance:175},300,1);
 const gameSource=fs.readFileSync(path.join(__dirname,'../game.js'),'utf8');
+const physicsSource=fs.readFileSync(path.join(__dirname,'../physics-core.js'),'utf8');
 const roadWidth=Number(gameSource.match(/const ROAD_WIDTH = (\d+);/)?.[1]||0);
 const laneMatch=gameSource.match(/const AI_LANES = \[([^\]]+)\]/);
 const aiLanes=laneMatch?laneMatch[1].split(',').map(Number):[];
@@ -67,7 +69,11 @@ const coneHit=Physics.hitCone(coneCar,cone,1);
 const failures=[];
 if(lowSpeedTurn.maxYaw<.65)failures.push(`STEERING RESPONSE: low-speed yaw ${lowSpeedTurn.maxYaw.toFixed(3)}, expected >= 0.650`);
 if(cleanCorner.maxSlip<.05||cleanCorner.maxSlip>.18)failures.push(`CLEAN CORNER: slip ${(cleanCorner.maxSlip*180/Math.PI).toFixed(1)}°, expected 3–10°`);
-if(fastCorner.maxSlip>.28)failures.push(`AGGRESSIVE CORNER: slip ${(fastCorner.maxSlip*180/Math.PI).toFixed(1)}°, expected <= 16° on normal dirt`);
+if(fastCorner.maxSlip<.14||fastCorner.maxSlip>.32)failures.push(`GRIP LIMIT: aggressive slip ${(fastCorner.maxSlip*180/Math.PI).toFixed(1)}°, expected a readable 8–18° slide`);
+if(mildSteer.maxSlip<.10&&mildSteer.maxSqueal>.02)failures.push(`SQUEAL: steering with ${ (mildSteer.maxSlip*180/Math.PI).toFixed(1)}° slip generated ${mildSteer.maxSqueal.toFixed(2)} despite staying below the grip-limit threshold`);
+if(flatOut.maxSlip<.22||flatOut.maxSqueal<.65)failures.push(`SQUEAL: grip-limit S-bend slip=${flatOut.maxSlip.toFixed(3)}rad level=${flatOut.maxSqueal.toFixed(2)}, expected obvious slip feedback`);
+if(!physicsSource.includes('const slideIntensity = clamp((Math.abs(state.slipAngle) - .10) / .16')||!gameSource.includes('squeal*.055*rough'))failures.push('SQUEAL AUDIO: level is not tied to actual slip intensity or its gain was not raised for legibility');
+if(!gameSource.includes('clamp(-car.slipAngle*.4,-.18,.18)'))failures.push('VEHICLE POSTURE: grip-limit slide yaw is not visually emphasized');
 if(rollingWheels.frontWheelSpeed<130||rollingWheels.frontWheelPhase===0)failures.push('WHEELS: straight-line rolling did not animate from actual speed');
 if(stoppedWheels.frontWheelSpeed!==0||stoppedWheels.frontWheelPhase!==stoppedPhase)failures.push('WHEELS: rotation continued after the car stopped');
 if(reversingWheels.frontWheelPhase>=.5)failures.push('WHEELS: phase did not reverse while reversing');
@@ -90,7 +96,8 @@ if(!gameSource.includes('buildStaticSceneCache')||!gameSource.includes('ctx.draw
 if(!gameSource.includes('this.maxParticles=60')||!gameSource.includes('trailHead')||!gameSource.includes('trailCount'))failures.push('BOUNDED TRANSIENTS: particle cap or skid-mark ring buffer missing');
 if(!coneHit||cone.down<=0||Math.hypot(cone.vx,cone.vy)<25)failures.push('CONE: impact did not launch and spin the cone');
 if(sixLapAI.time>145||sixLapAI.offRatio>.05)failures.push(`AI: six-lap controller time ${sixLapAI.time.toFixed(1)}s off-road ${(sixLapAI.offRatio*100).toFixed(0)}%`);
-console.log(`clean-corner slip=${(cleanCorner.maxSlip*180/Math.PI).toFixed(1)}° aggressive-slip=${(fastCorner.maxSlip*180/Math.PI).toFixed(1)}° yaw=${fastCorner.maxYaw.toFixed(3)}`);
+console.log(`clean-corner slip=${(cleanCorner.maxSlip*180/Math.PI).toFixed(1)}° squeal=${cleanCorner.maxSqueal.toFixed(2)} mild-steer slip=${(mildSteer.maxSlip*180/Math.PI).toFixed(1)}° squeal=${mildSteer.maxSqueal.toFixed(2)}`);
+console.log(`grip-limit slip=${(fastCorner.maxSlip*180/Math.PI).toFixed(1)}° squeal=${fastCorner.maxSqueal.toFixed(2)} yaw=${fastCorner.maxYaw.toFixed(3)} S-bend squeal=${flatOut.maxSqueal.toFixed(2)}`);
 console.log(`countersteer ${(counterSteer.peak*180/Math.PI).toFixed(1)}° -> ${(counterSteer.end*180/Math.PI).toFixed(1)}° in 0.67s`);
 console.log(`low-speed steering yaw=${lowSpeedTurn.maxYaw.toFixed(3)} after 0.55s`);
 console.log(`full-throttle slip=${flatOut.maxSlip.toFixed(3)} distance=${flatOut.distance.toFixed(1)}`);
