@@ -200,7 +200,7 @@ Capture a reproducible before-state for the existing Track #2 (currently named `
 
 - **Status:** TECHNICALLY COMPLETE. The phase may proceed without owner sign-off under the accepted iterative workflow.
 - **Source/baseline commit:** `ae4d3f50ff4dd0e055334b1ec251816ddeedf5d2` (C3 provenance record).
-- **Resulting implementation commit:** pending C4 implementation commit.
+- **Resulting implementation commit:** `c8862c80dc8f6d5e5ec2fa5f3ce22ded043e75bf` (`feat: add compact hop and spring suspension for C4`).
 - **Result/evidence:** [`C4 hop evidence`](evidence/c4-hop.md) and [`repeatable handling-check output`](evidence/c4-handling-check.txt).
 - **Implementation:** added independently stepped vertical hop/bump trajectories, a damped suspension spring, low-profile step artwork, and player jump/landing tone triggers. The Track 1/2/3 route definitions and hop/bump locations are unchanged. No Canyon track work was started.
 - **Live runtime:** the current checkout was served from localhost and started in the browser as the normal production game; the HUD and controls ran in a five-car, six-lap race. A brief operator throttle check reached 113 km/h but ran off-road; it is not presented as a calibrated handling result.
@@ -316,4 +316,4 @@ Do not silently change a decision when implementation evidence shows it may be w
 
 ## Current session boundary
 
-This ADR records decisions and the C0–C10 checklist. C0 is **OWNER VERIFIED**; the owner accepted its technical evidence as sufficient and waived human lap timing and subjective audio feel as gates, to be evaluated later during normal iteration. C1–C3 are technically complete. C4 is next; proceed unless owner feedback is genuinely needed under the iterative-workflow direction.
+This ADR records decisions and the C0–C10 checklist. C0 is **OWNER VERIFIED**; the owner accepted its technical evidence as sufficient and waived human lap timing and subjective audio feel as gates, to be evaluated later during normal iteration. C1–C4 are technically complete. C5 is next; proceed unless owner feedback is genuinely needed under the iterative-workflow direction.
