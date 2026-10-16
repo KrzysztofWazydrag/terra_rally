@@ -177,7 +177,8 @@ Capture a reproducible before-state for the existing Track #2 (currently named `
 
 - **Status:** TECHNICALLY COMPLETE.
 - **Source/baseline commit:** `2f631a7d9c99a73c9fd4084e578706db9e800aa6` (C2 provenance record).
-- **Result/evidence:** see [`C3 vehicle pipeline evidence`](evidence/c3-vehicle-animation.md) and [`race-scale vehicle screenshot`](evidence/c3-runtime/c3-track1-race-vehicle.png); resulting implementation commit is recorded after commit.
+- **Resulting implementation commit:** `154e58fa8d3f9771cdf25038b3ba5093c23e307f` (`feat: integrate buggy wheels in C3 vehicle frames`).
+- **Result/evidence:** see [`C3 vehicle pipeline evidence`](evidence/c3-vehicle-animation.md) and [`race-scale vehicle screenshot`](evidence/c3-runtime/c3-track1-race-vehicle.png).
 - **Implementation:** the existing top-down buggy art already contains its four wheels. Directional frames now use those integrated wheels as the only wheel layer; the separate procedural tread graphics were removed. The contact shadow remains at the ground point instead of shifting upward with the car's jump height. No vehicle art, handling, track, or jump rules changed.
 - **Limitations:** the durable image captures normal race scale and multiple car headings, but no airborne frame was captured; C4 will verify the hop presentation. The browser screenshot is from Track 1 because C3 is a shared vehicle-rendering pipeline change; Track 2 remains untouched until C5.
 
