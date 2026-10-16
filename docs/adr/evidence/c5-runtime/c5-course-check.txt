@@ -1,0 +1,5 @@
+Canyon route length=7996 units width=320 (5.16 buggy widths)
+Competent controller lap=47.4s off-road=0.0% peak-slip=20.9°
+route features: fast straight, sweep, hairpin, S bend, dirt cut, oil=3, cones=6, hop=2, bridge/water=1, tunnel clear width=272 units (4.4 buggy widths), kerbs=6
+hazard wiring: production AI oil avoidance and shared oil handling verified; Canyon cones use shared physical cone update
+PASS Canyon course checks
