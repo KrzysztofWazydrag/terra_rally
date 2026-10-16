@@ -1,6 +1,6 @@
 # ADR — Canyon Race Feel & ATR Gameplay Fidelity Programme
 
-- **Status:** Accepted as the authoritative implementation plan; no implementation phase has started
+- **Status:** Accepted as the authoritative implementation plan; C0 is BLOCKED pending live-race evidence
 - **Date:** 2026-10-16
 - **Decision owners:** Game owner and implementation agent
 - **Scope:** Championship Track #2 only, working name **CANYON**
@@ -12,7 +12,7 @@
 
 | Phase | Description | Status | Evidence | Owner approved |
 |---|---|---|---|---|
-| C0 | Baseline / evidence | NOT STARTED | Not captured | No |
+| C0 | Baseline / evidence | BLOCKED | Partial; [`C0 baseline evidence`](evidence/c0-baseline.md) and [handling-check output](evidence/c0-handling-check.txt). Required live-race evidence is unavailable. | No |
 | C1 | Vehicle pace | NOT STARTED | Not captured | No |
 | C2 | Handling / grip limit | NOT STARTED | Not captured | No |
 | C3 | Vehicle animation pipeline | NOT STARTED | Not captured | No |
@@ -82,20 +82,30 @@ Checkboxes are phase work items, not proof of completion. Each phase remains `NO
 
 ### Phase C0 — Baseline / evidence
 
-**Status: NOT STARTED**
+**Status: BLOCKED**
 
 Capture a reproducible before-state for the existing Track #2 (currently named `QUARRY SWITCHBACK` in code), which is the programme's future CANYON reference.
 
-- [ ] Record competent-player lap time and test conditions.
-- [ ] Measure 0-to-top-speed time and current maximum speed.
-- [ ] Measure road width relative to the rendered vehicle width.
-- [ ] Record FPS and frame-time conditions, including viewport/resolution.
-- [ ] Record AI lap times and race conditions.
-- [ ] Describe current engine-audio behavior across acceleration and sustained speed.
-- [ ] Capture screenshots of vehicle/wheel rendering and the track/HUD during a normal race.
-- [ ] Store the evidence and identify the tested build/commit or source state.
+- [ ] Record competent-player lap time and test conditions. *(Unavailable: live game runtime could not be observed; see evidence.)*
+- [x] Measure 0-to-top-speed time and current maximum speed. *(Controlled physics-core result only; live result unavailable.)*
+- [x] Measure road width relative to the rendered vehicle width. *(Source dimensions: 320 / 62 = 5.16.)*
+- [ ] Record FPS and frame-time conditions, including viewport/resolution. *(Unavailable: no live runtime measurement.)*
+- [ ] Record AI lap times and race conditions. *(Unavailable: production AI could not be observed; synthetic test loop is explicitly not a substitute.)*
+- [x] Describe current engine-audio behavior across acceleration and sustained speed. *(Source inspection only; audible behavior unavailable.)*
+- [ ] Capture screenshots of vehicle/wheel rendering and the track/HUD during a normal race. *(Unavailable: game page observation denied by browser security policy.)*
+- [x] Store available evidence and identify the tested build/commit or source state. *(Source commit and evidence paths recorded below.)*
 
 **Acceptance evidence:** all listed measurements or a clear note explaining unavailable measurements; baseline screenshots; reproducible test conditions. Do not change gameplay during C0.
+
+**C0 evidence record (2026-10-16):**
+
+- **Status:** BLOCKED; live-race evidence and baseline screenshots remain outstanding. Not technically complete and not owner verified.
+- **Source/baseline commit:** `35c989d7b206ce96f2c4bb5201259ad62ab5c60c` (`baseline: import existing Terra Rally project`).
+- **Resulting evidence commit:** `340f0e5` (`docs: capture available C0 baseline evidence`).
+- **Measurements/results:** controlled 60 Hz physics simulation reports 162.9 / 274.7 / 326.0 game units/s at 1 / 2 / 3 seconds, with configured cap 326; road width 320 / buggy draw width 62 = 5.16; handling check passes. The test's 19.4-second skilled lap and 112.0-second six-lap result use a synthetic test route and are not accepted as game-track or production-AI baseline results. FPS, actual player/AI times, live acceleration, and screenshots are unavailable.
+- **Evidence paths:** [`evidence/c0-baseline.md`](evidence/c0-baseline.md); [`evidence/c0-handling-check.txt`](evidence/c0-handling-check.txt).
+- **Implementation notes:** no gameplay files or track behavior changed. Git was initialized at the user's request; the original project was committed as the source baseline before C0 evidence capture.
+- **Known limitations / blocker:** the existing game page used a `file://` URL. Browser policy denied observation and prohibited alternate surfaces/workarounds; a local static server could not be started in the restricted environment. Resume C0 with an allowed runtime, capture missing live evidence and screenshots, then stop for owner verification.
 
 ### Phase C1 — Vehicle pace
 
@@ -264,4 +274,4 @@ Do not silently change a decision when implementation evidence shows it may be w
 
 ## Current session boundary
 
-This ADR records decisions and the C0–C10 checklist only. No gameplay code was changed, no phase was started, and C0 remains **NOT STARTED**. Future work begins only when explicitly instructed, one approved phase at a time.
+This ADR records decisions and the C0–C10 checklist. C0 has partial source/physics evidence and is **BLOCKED** on live-race measurements and screenshots; no gameplay code was changed. Resume C0 and obtain owner verification before beginning C1.
